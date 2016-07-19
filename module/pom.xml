@@ -30,10 +30,10 @@
                             <groupId>${project.groupId}</groupId>
                             <artifactId>audit-service</artifactId>
                         </ejbModule>
-                        <ejbModule>
+                        <jarModule>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>audit-model</artifactId>
-                        </ejbModule>
+                        </jarModule>
                         <webModule>
                             <groupId>${project.groupId}</groupId>
                             <context-root>${project.parent.artifactId}</context-root>  
@@ -41,6 +41,7 @@
                         </webModule>
                     </modules>
                     <skinnyWars>true</skinnyWars>
+                    <defaultLibBundleDir>APP-INF/lib</defaultLibBundleDir>
                 </configuration>
             </plugin>
         </plugins>
@@ -63,7 +64,7 @@
             <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
             <artifactId>audit-model</artifactId>
             <version>${audit.model.version}</version>
-            <type>ejb</type>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>  
@@ -71,6 +72,13 @@
             <version>${project.version}</version>
             <type>war</type>
         </dependency> 
+        
+        <!-- Skinny WAR depencencies -->
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>usm4uvms</artifactId>
+            <version>${usm4uvms.version}</version>
+        </dependency>
     </dependencies>
     
     <!-- USE following command to run this profile: mvn clean install -P wildfly-deploy wildfly:deploy -Dhostname=127.0.0.1 -Dport=9990 -Dusername=admin -Dpassword=asdf  -->
@@ -95,6 +103,38 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>copy-ear</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.10</version>
+                        <executions>
+                            <execution>
+                                <id>copy-installed</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>${project.groupId}</groupId>
+                                            <artifactId>${project.artifactId}</artifactId>
+                                            <version>${project.version}</version>
+                                            <type>${project.packaging}</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>C:\dev\WebLogic\domain1213\servers\AdminServer\upload</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>  
+                </plugins>
+            </build>      
         </profile>
     </profiles>
     
