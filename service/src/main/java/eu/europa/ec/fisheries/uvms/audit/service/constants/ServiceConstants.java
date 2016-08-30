@@ -13,6 +13,6 @@ package eu.europa.ec.fisheries.uvms.audit.service.constants;
 
 public class ServiceConstants {
     
-    public static final String FIND_BY_NAME = "Parameter.findByName";
+    public static final String AUDIT_DOMAIN_MODEL_LOOKUP = "java:global/audit-dbaccess-module/audit-dbaccess-domain/AuditDomainModelBean!eu.europa.ec.fisheries.uvms.audit.AuditDomainModel";
 
 }

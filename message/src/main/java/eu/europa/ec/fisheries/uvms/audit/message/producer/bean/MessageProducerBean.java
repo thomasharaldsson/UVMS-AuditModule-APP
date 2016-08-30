@@ -33,20 +33,11 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
 
     final static Logger LOG = LoggerFactory.getLogger(MessageProducerBean.class);
 
-    @Resource(mappedName = MessageConstants.QUEUE_DATASOURCE_INTERNAL)
-    private Queue localDbQueue;
-
     @Resource(mappedName = MessageConstants.AUDIT_RESPONSE_QUEUE)
     private Queue responseQueue;
 
     @Resource(mappedName = ConfigConstants.CONFIG_MESSAGE_IN_QUEUE)
     private Queue configQueue;
-    
-//    @Resource(lookup = MessageConstants.CONNECTION_FACTORY)
-//    private ConnectionFactory connectionFactory;
-//
-//    private Connection connection = null;
-//    private Session session = null;
 
     private static final int CONFIG_TTL = 30000;
 
@@ -57,16 +48,12 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public String sendDataSourceMessage(String text, DataSourceQueue queue) throws AuditMessageException {
         try {
-//            connectToQueue();
             Session session = connector.getNewSession();
             TextMessage message = session.createTextMessage();
             message.setJMSReplyTo(responseQueue);
             message.setText(text);
 
             switch (queue) {
-            case INTERNAL:
-                getProducer(session, localDbQueue).send(message);
-                break;
             case INTEGRATION:
                 break;
             case CONFIG:
@@ -78,8 +65,6 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
         } catch (Exception e) {
             LOG.error("[ Error when sending message. ] {0}", e.getMessage());
             throw new AuditMessageException("[ Error when sending message. ]", e);
-//        } finally {
-//            disconnectQueue();
         }
     }
 
@@ -90,7 +75,6 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
 
             LOG.info("[ Sending message back to recipient on queue ] {}", requestMessage.getJMSReplyTo());
 
-//            connectToQueue();
             Session session = connector.getNewSession();
             TextMessage message = session.createTextMessage();
             message.setJMSCorrelationID(message.getJMSMessageID());
@@ -102,8 +86,6 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
         } catch (Exception e) {
             LOG.error("[ Error when sending message. ] {}", e.getMessage());
             throw new AuditMessageException("[ Error when sending message. ]", e);
-//        } finally {
-//            disconnectQueue();
         }
     }
 
@@ -118,23 +100,6 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
             throw new ConfigMessageException("[ Error when sending config message. ]");
         }
     }
-
-//    private void connectToQueue() throws JMSException {
-//        connection = connectionFactory.createConnection();
-//        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//        connection.start();
-//    }
-//
-//    private void disconnectQueue() {
-//        try {
-//            if (connection != null) {
-//                connection.stop();
-//                connection.close();
-//            }
-//        } catch (JMSException e) {
-//            LOG.error("[ Error when closing JMS connection ] {}", e.getMessage());
-//        }
-//    }
 
     private javax.jms.MessageProducer getProducer(Session session, Destination destination) throws JMSException {
         javax.jms.MessageProducer producer = session.createProducer(destination);

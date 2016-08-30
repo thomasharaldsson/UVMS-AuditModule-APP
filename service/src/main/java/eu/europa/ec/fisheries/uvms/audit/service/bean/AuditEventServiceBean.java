@@ -75,9 +75,7 @@ public class AuditEventServiceBean implements AuditEventService {
                 break;
             case AUDITLOG_LIST:
                 LOG.info("AUDITLOG_LIST");
-
-                GetAuditLogListByQueryRequest getAuditLogRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage,
-                        GetAuditLogListByQueryRequest.class);
+                GetAuditLogListByQueryRequest getAuditLogRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, GetAuditLogListByQueryRequest.class);
                 auditService.getList(getAuditLogRequest.getQuery());
                 break;
             case PING:

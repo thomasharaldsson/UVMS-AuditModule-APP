@@ -19,7 +19,6 @@ public class MessageConstants {
     public static final String AUDIT_MESSAGE_IN_QUEUE = "java:/jms/queue/UVMSAuditEvent";
     public static final String AUDIT_MESSAGE_IN_QUEUE_NAME = "UVMSAuditEvent";
     public static final String AUDIT_RESPONSE_QUEUE = "java:/jms/queue/UVMSAudit";
-    public static final String QUEUE_DATASOURCE_INTERNAL = "java:/jms/queue/UVMSAuditModel";
 
     public static final String MODULE_NAME = "audit";
 
