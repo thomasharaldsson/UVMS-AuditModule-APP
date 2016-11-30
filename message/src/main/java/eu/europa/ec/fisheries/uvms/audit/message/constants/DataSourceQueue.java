@@ -17,6 +17,6 @@ package eu.europa.ec.fisheries.uvms.audit.message.constants;
 
 public enum DataSourceQueue {
 
-    INTERNAL, INTEGRATION, CONFIG;
+    INTEGRATION, CONFIG
 
 }
