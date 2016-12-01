@@ -13,9 +13,13 @@ package eu.europa.ec.fisheries.uvms.audit.service.bean;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
 
+import eu.europa.ec.fisheries.uvms.audit.AuditDomainModel;
+import eu.europa.ec.fisheries.uvms.audit.dto.ListResponseDto;
+import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelException;
+import eu.europa.ec.fisheries.uvms.audit.model.exception.InputArgumentException;
+import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
+import eu.europa.ec.fisheries.uvms.audit.service.constants.ServiceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,14 +27,8 @@ import eu.europa.ec.fisheries.schema.audit.search.v1.AuditLogListQuery;
 import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogResponse;
 import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
-import eu.europa.ec.fisheries.uvms.audit.message.constants.DataSourceQueue;
 import eu.europa.ec.fisheries.uvms.audit.message.consumer.MessageConsumer;
-import eu.europa.ec.fisheries.uvms.audit.message.exception.AuditMessageException;
 import eu.europa.ec.fisheries.uvms.audit.message.producer.MessageProducer;
-import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException;
-import eu.europa.ec.fisheries.uvms.audit.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditDataSourceRequestMapper;
-import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditDataSourceResponseMapper;
 import eu.europa.ec.fisheries.uvms.audit.service.AuditService;
 import eu.europa.ec.fisheries.uvms.audit.service.exception.AuditServiceException;
 
@@ -39,11 +37,8 @@ public class AuditServiceBean implements AuditService {
 
     final static Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class);
 
-    @EJB
-    MessageConsumer consumer;
-
-    @EJB
-    MessageProducer producer;
+    @EJB(lookup = ServiceConstants.AUDIT_DOMAIN_MODEL_LOOKUP)
+    AuditDomainModel model;
 
     /**
      * {@inheritDoc}
@@ -56,18 +51,13 @@ public class AuditServiceBean implements AuditService {
     public GetAuditLogListByQueryResponse getList(AuditLogListQuery query) throws AuditServiceException {
         try {
             LOG.info("Get list invoked in service layer");
-            String request = AuditDataSourceRequestMapper.mapGetListByQuery(query);
-            String messageId = producer.sendDataSourceMessage(request, DataSourceQueue.INTERNAL);
-            TextMessage response = consumer.getMessage(messageId, TextMessage.class);
-            if (response == null) {
+            ListResponseDto auditLogs = model.getAuditListByQuery(query);
+            if (auditLogs == null) {
                 LOG.error("[ Error when getting list, response from JMS Queue is null ]");
                 throw new AuditServiceException("[ Error when getting list, response from JMS Queue is null ]");
             }
-            return AuditDataSourceResponseMapper.mapToGetAuditListByQueryResponse(response);
-        } catch (AuditModelMarshallException | AuditMessageException | JMSException e) {
-            LOG.error("[ Error when getting audit list by query ] {}", e.getMessage());
-            throw new AuditServiceException("[ Error when getting audit list by query ]", e);
-        } catch (ModelMapperException e) {
+            return AuditLogMapper.mapAuditListResponseToAuditLogListByQuery(auditLogs);
+        } catch (AuditModelException | InputArgumentException e) {
             LOG.error("[ Error when getting audit list by query ] {}", e.getMessage());
             throw new AuditServiceException("[ Error when getting audit list by query ]", e);
         }
@@ -85,18 +75,13 @@ public class AuditServiceBean implements AuditService {
     public CreateAuditLogResponse createAuditLog(AuditLogType auditLogType) throws AuditServiceException {
         try {
             LOG.info("Create audit log invoked in service layer");
-            String request = AuditDataSourceRequestMapper.mapCreateAuditLog(auditLogType);
-            String messageId = producer.sendDataSourceMessage(request, DataSourceQueue.INTERNAL);
-            TextMessage response = consumer.getMessage(messageId, TextMessage.class);
-            if (response == null) {
+            AuditLogType auditLog = model.createAuditLog(auditLogType);
+            if (auditLog == null) {
                 LOG.error("[ Error when creating audit log, response from JMS Queue is null ]");
                 throw new AuditServiceException("[ Error when creating audit log, response from JMS Queue is null ]");
             }
-            return AuditDataSourceResponseMapper.mapToCreateAuditLogResponse(response);
-        } catch (AuditModelMarshallException | AuditMessageException | JMSException e) {
-            LOG.error("[ Error when creating audit log ] {}", e.getMessage());
-            throw new AuditServiceException("[ Error when creating audit log ]", e);
-        } catch (ModelMapperException e) {
+            return AuditLogMapper.mapAuditLogTypeToAuditLogResponse(auditLog);
+        } catch (AuditModelException | InputArgumentException e) {
             LOG.error("[ Error when creating audit log ] {}", e.getMessage());
             throw new AuditServiceException("[ Error when creating audit log ]", e);
         }

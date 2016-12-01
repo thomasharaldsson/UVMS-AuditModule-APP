@@ -1,13 +1,13 @@
 /*
- ﻿Developed with the contribution of the European Commission - Directorate General for Maritime Affairs and Fisheries
- © European Union, 2015-2016.
+﻿Developed with the contribution of the European Commission - Directorate General for Maritime Affairs and Fisheries
+© European Union, 2015-2016.
 
- This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can
- redistribute it and/or modify it under the terms of the GNU General Public License as published by the
- Free Software Foundation, either version 3 of the License, or any later version. The IFDM Suite is distributed in
- the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
- copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can
+redistribute it and/or modify it under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or any later version. The IFDM Suite is distributed in
+the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
+copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.europa.ec.fisheries.uvms.audit.message.producer.bean;
 
@@ -21,31 +21,55 @@ import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.ejb.*;
 import javax.jms.*;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
-@Singleton
+@Stateless
 public class MessageProducerBean implements MessageProducer, ConfigMessageProducer {
 
     final static Logger LOG = LoggerFactory.getLogger(MessageProducerBean.class);
 
-    @Resource(mappedName = MessageConstants.QUEUE_DATASOURCE_INTERNAL)
-    private Queue localDbQueue;
-
-    @Resource(mappedName = MessageConstants.AUDIT_RESPONSE_QUEUE)
     private Queue responseQueue;
-
-    @Resource(mappedName = ConfigConstants.CONFIG_MESSAGE_IN_QUEUE)
     private Queue configQueue;
 
     private static final int CONFIG_TTL = 30000;
 
     @EJB
     JMSConnectorBean connector;
+
+    @PostConstruct
+    public void init() {
+        InitialContext ctx;
+        try {
+            ctx = new InitialContext();
+        } catch (Exception e) {
+            LOG.error("Failed to get InitialContext",e);
+            throw new RuntimeException(e);
+        }
+        responseQueue = lookupQueue(ctx, MessageConstants.AUDIT_RESPONSE_QUEUE);
+        configQueue = lookupQueue(ctx, ConfigConstants.CONFIG_MESSAGE_IN_QUEUE);
+    }
+
+    private Queue lookupQueue(InitialContext ctx, String queue) {
+        try {
+            return (Queue)ctx.lookup(queue);
+        } catch (NamingException e) {
+            //if we did not find the queue we might need to add java:/ at the start
+            LOG.debug("Queue lookup failed for " + queue);
+            String wfQueueName = "java:/"+ queue;
+            try {
+                LOG.debug("trying " + wfQueueName);
+                return (Queue)ctx.lookup(wfQueueName);
+            } catch (Exception e2) {
+                LOG.error("Queue lookup failed for both " + queue + " and " + wfQueueName);
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -57,9 +81,6 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
             message.setText(text);
 
             switch (queue) {
-                case INTERNAL:
-                    getProducer(session, localDbQueue).send(message);
-                    break;
                 case INTEGRATION:
                     break;
                 case CONFIG:

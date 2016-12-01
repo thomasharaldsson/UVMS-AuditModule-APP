@@ -32,9 +32,7 @@ import eu.europa.ec.fisheries.uvms.audit.message.event.carrier.EventMessage;
 @MessageDriven(mappedName = MessageConstants.AUDIT_MESSAGE_IN_QUEUE, activationConfig = {
     @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
-    @ActivationConfigProperty(propertyName = "destination", propertyValue = MessageConstants.AUDIT_MESSAGE_IN_QUEUE_NAME),
-    @ActivationConfigProperty(propertyName = "destinationJndiName", propertyValue = MessageConstants.AUDIT_MESSAGE_IN_QUEUE),
-    @ActivationConfigProperty(propertyName = "connectionFactoryJndiName", propertyValue = MessageConstants.CONNECTION_FACTORY)
+    @ActivationConfigProperty(propertyName = "destination", propertyValue = MessageConstants.AUDIT_MESSAGE_IN_QUEUE_NAME)
 })
 public class MessageConsumerBean implements MessageListener {
 

@@ -9,7 +9,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
         <artifactId>audit</artifactId>
-        <version>2.0.8-SNAPSHOT</version>
+        <version>2.1.2-SNAPSHOT</version>
     </parent>
     
     <build>
@@ -19,7 +19,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
-                <version>2.7</version>
+                <version>2.10.1</version>
                 <configuration>
                     <modules>
                         <ejbModule>
@@ -36,8 +36,8 @@
                         </jarModule>
                         <webModule>
                             <groupId>${project.groupId}</groupId>
-                            <context-root>${project.parent.artifactId}</context-root>  
                             <artifactId>audit-rest</artifactId>
+                            <contextRoot>${parent.artifactId}</contextRoot>
                         </webModule>
                     </modules>
                     <skinnyWars>true</skinnyWars>
@@ -72,7 +72,7 @@
             <version>${project.version}</version>
             <type>war</type>
         </dependency> 
-        
+
         <!-- Skinny WAR depencencies -->
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
@@ -132,9 +132,9 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>  
+                    </plugin>
                 </plugins>
-            </build>      
+            </build>
         </profile>
     </profiles>
     
