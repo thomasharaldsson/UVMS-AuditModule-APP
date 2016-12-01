@@ -49,7 +49,7 @@ public class AuditEventServiceBean implements AuditEventService {
     @ErrorEvent
     Event<EventMessage> errorEvent;
 
-    @Inject
+    @EJB
     MessageProducer producer;
 
     @EJB
