@@ -20,81 +20,29 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
                 <version>2.10.1</version>
-                <executions>
-                    <execution>
-                        <!-- Disable default execution -->
-                        <id>default-ear</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <!-- Disable default execution -->
-                        <id>default-generate-application-xml</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>wildfly</id>
-                        <goals>
-                            <goal>ear</goal>
-                            <goal>generate-application-xml</goal>
-                        </goals>
-                        <configuration>
-                            <modules>
-                                <ejbModule>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>audit-message</artifactId>
-                                </ejbModule>
-                                <ejbModule>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>audit-service</artifactId>
-                                </ejbModule>
-                                <jarModule>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>audit-model</artifactId>
-                                </jarModule>
-                                <webModule>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>audit-rest</artifactId>
-                                    <contextRoot>/audit</contextRoot>
-                                </webModule>
-                            </modules>
-                            <classifier>wildfly</classifier>
-                            <skinnyWars>true</skinnyWars>
-                            <workDirectory>wildfly</workDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>weblogic</id>
-                        <goals>
-                            <goal>ear</goal>
-                            <goal>generate-application-xml</goal>
-                        </goals>
-                        <configuration>
-                            <modules>
-                                <ejbModule>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>audit-message</artifactId>
-                                </ejbModule>
-                                <ejbModule>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>audit-service</artifactId>
-                                </ejbModule>
-                                <jarModule>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>audit-model</artifactId>
-                                </jarModule>
-                                <webModule>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>audit-rest</artifactId>
-                                    <contextRoot>/audit</contextRoot>
-                                </webModule>
-                            </modules>
-                            <classifier>weblogic</classifier>
-                            <skinnyWars>true</skinnyWars>
-                            <defaultLibBundleDir>APP-INF/lib</defaultLibBundleDir>
-                            <workDirectory>weblogic</workDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <modules>
+                        <ejbModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>audit-message</artifactId>
+                        </ejbModule>
+                        <ejbModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>audit-service</artifactId>
+                        </ejbModule>
+                        <jarModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>audit-model</artifactId>
+                        </jarModule>
+                        <webModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>audit-rest</artifactId>
+                            <contextRoot>${parent.artifactId}</contextRoot>
+                        </webModule>
+                    </modules>
+                    <skinnyWars>true</skinnyWars>
+                    <defaultLibBundleDir>APP-INF/lib</defaultLibBundleDir>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -178,7 +126,6 @@
                                             <artifactId>${project.artifactId}</artifactId>
                                             <version>${project.version}</version>
                                             <type>${project.packaging}</type>
-                                            <classifier>weblogic</classifier>
                                         </artifactItem>
                                     </artifactItems>
                                     <outputDirectory>C:\dev\WebLogic\domain1213\servers\AdminServer\upload</outputDirectory>
