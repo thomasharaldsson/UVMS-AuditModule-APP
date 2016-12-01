@@ -1,2 +1,6 @@
 target
 logging.properties
+.idea
+*.iml
+**/.idea
+rest/src/main/webapp/apidocs/
