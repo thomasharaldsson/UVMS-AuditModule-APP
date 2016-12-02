@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.audit.message.producer.MessageProducer;
 import eu.europa.ec.fisheries.uvms.config.constants.ConfigConstants;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +37,6 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
     private Queue responseQueue;
     private Queue configQueue;
 
-    private static final int CONFIG_TTL = 30000;
-
     @EJB
     JMSConnectorBean connector;
 
@@ -50,25 +49,8 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
             LOG.error("Failed to get InitialContext",e);
             throw new RuntimeException(e);
         }
-        responseQueue = lookupQueue(ctx, MessageConstants.AUDIT_RESPONSE_QUEUE);
-        configQueue = lookupQueue(ctx, ConfigConstants.CONFIG_MESSAGE_IN_QUEUE);
-    }
-
-    private Queue lookupQueue(InitialContext ctx, String queue) {
-        try {
-            return (Queue)ctx.lookup(queue);
-        } catch (NamingException e) {
-            //if we did not find the queue we might need to add java:/ at the start
-            LOG.debug("Queue lookup failed for " + queue);
-            String wfQueueName = "java:/"+ queue;
-            try {
-                LOG.debug("trying " + wfQueueName);
-                return (Queue)ctx.lookup(wfQueueName);
-            } catch (Exception e2) {
-                LOG.error("Queue lookup failed for both " + queue + " and " + wfQueueName);
-                throw new RuntimeException(e);
-            }
-        }
+        responseQueue = JMSUtils.lookupQueue(ctx, MessageConstants.AUDIT_RESPONSE_QUEUE);
+        configQueue = JMSUtils.lookupQueue(ctx, ConfigConstants.CONFIG_MESSAGE_IN_QUEUE);
     }
 
     @Override

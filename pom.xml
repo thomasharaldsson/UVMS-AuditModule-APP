@@ -20,10 +20,11 @@
 
         <usm4uvms.version>2.1.1</usm4uvms.version>
         <audit.model.version>2.1.1</audit.model.version>
+        <uvms.common.version>2.0.13-SNAPSHOT</uvms.common.version>
+        <uvms.config.version>2.1.2-SNAPSHOT</uvms.config.version>
+        <uvms.config.artifactId>uvms-config</uvms.config.artifactId>
 
         <project.scm.id>github</project.scm.id>
-        <uvms.config.artifactId>uvms-config</uvms.config.artifactId>
-        <uvms.config.version>2.1.2-SNAPSHOT</uvms.config.version>
     </properties>
 
     <profiles>
