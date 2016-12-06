@@ -18,7 +18,7 @@
         <logback.core.version>1.1.2</logback.core.version>
         <maven.plugin.version>3.4</maven.plugin.version>
 
-        <usm4uvms.version>2.1.1</usm4uvms.version>
+        <usm4uvms.version>2.1.2</usm4uvms.version>
         <audit.model.version>2.1.1</audit.model.version>
         <uvms.common.version>2.0.13</uvms.common.version>
         <uvms.config.version>2.1.2</uvms.config.version>
