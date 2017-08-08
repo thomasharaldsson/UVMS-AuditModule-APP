@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import eu.europa.ec.fisheries.uvms.audit.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.audit.service.config.ParameterKey;
@@ -22,6 +24,9 @@ import eu.europa.ec.fisheries.uvms.config.constants.ConfigHelper;
 
 @Stateless
 public class AuditConfigHelper implements ConfigHelper {
+
+	@PersistenceContext
+    protected EntityManager em;
 
     @Override
     public List<String> getAllParameterKeys() {
@@ -37,5 +42,10 @@ public class AuditConfigHelper implements ConfigHelper {
     public String getModuleName() {
         return MessageConstants.MODULE_NAME;
     }
+
+	@Override
+	public EntityManager getEntityManager() {
+		return em;
+	}
 
 }
