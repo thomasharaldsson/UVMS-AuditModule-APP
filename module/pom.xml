@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>audit-module</artifactId>
     <name>${project.parent.artifactId}-module</name>
     <packaging>ear</packaging>
-    
+
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
         <artifactId>audit</artifactId>
         <version>3.0.8-SNAPSHOT</version>
     </parent>
-    
+
     <build>
         <finalName>${project.name}</finalName>
         <plugins>
@@ -41,7 +41,6 @@
                     </modules>
                     <skinnyWars>true</skinnyWars>
                     <defaultLibBundleDir>APP-INF/lib</defaultLibBundleDir>
-                    <version>7</version>
                 </configuration>
             </plugin>
         </plugins>
@@ -49,13 +48,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>     
+            <groupId>${project.groupId}</groupId>
             <artifactId>audit-message</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>  
+            <groupId>${project.groupId}</groupId>
             <artifactId>audit-service</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
@@ -67,11 +66,11 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>  
+            <groupId>${project.groupId}</groupId>
             <artifactId>audit-rest</artifactId>
             <version>${project.version}</version>
             <type>war</type>
-        </dependency> 
+        </dependency>
 
         <!-- Skinny WAR depencencies -->
         <dependency>
@@ -80,13 +79,13 @@
             <version>${usm4uvms.version}</version>
         </dependency>
     </dependencies>
-    
+
     <!-- USE following command to run this profile: mvn clean install -P wildfly-deploy wildfly:deploy -Dhostname=127.0.0.1 -Dport=9990 -Dusername=admin -Dpassword=asdf  -->
     <profiles>
         <profile>
             <id>wildfly-deploy</id>
             <build>
-                <plugins>	
+                <plugins>
                     <plugin>
                         <groupId>org.wildfly.plugins</groupId>
                         <artifactId>wildfly-maven-plugin</artifactId>
@@ -137,5 +136,5 @@
             </build>
         </profile>
     </profiles>
-    
+
 </project>
