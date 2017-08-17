@@ -12,13 +12,10 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package eu.europa.ec.fisheries.uvms.audit.message.consumer.bean;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.jms.*;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 import org.slf4j.Logger;
@@ -41,46 +38,25 @@ public class ComponentMessageConsumerBean implements MessageConsumer, ConfigMess
 
     private ConnectionFactory connectionFactory;
 
-    private Connection connection = null;
-    private Session session = null;
-
     @PostConstruct
     private void init() {
-        LOG.debug("Open connection to JMS broker");
-        InitialContext ctx;
-        try {
-            ctx = new InitialContext();
-        } catch (Exception e) {
-            LOG.error("Failed to get InitialContext",e);
-            throw new RuntimeException(e);
-        }
-        try {
-            connectionFactory = (QueueConnectionFactory) ctx.lookup(MessageConstants.CONNECTION_FACTORY);
-        } catch (NamingException ne) {
-            //if we did not find the connection factory we might need to add java:/ at the start
-            LOG.debug("Connection Factory lookup failed for " + MessageConstants.CONNECTION_FACTORY);
-            String wfName = "java:/" + MessageConstants.CONNECTION_FACTORY;
-            try {
-                LOG.debug("trying "+wfName);
-                connectionFactory = (QueueConnectionFactory) ctx.lookup(wfName);
-            } catch (Exception e) {
-                LOG.error("Connection Factory lookup failed for both "+MessageConstants.CONNECTION_FACTORY + " and " + wfName);
-                throw new RuntimeException(e);
-            }
-        }
-        responseQueue = JMSUtils.lookupQueue(ctx, MessageConstants.AUDIT_RESPONSE_QUEUE);
+        connectionFactory = JMSUtils.lookupConnectionFactory();
+        responseQueue = JMSUtils.lookupQueue(MessageConstants.AUDIT_RESPONSE_QUEUE);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public <T> T getMessage(String correlationId, Class type) throws AuditMessageException {
-        try {
+    	if (correlationId == null || correlationId.isEmpty()) {
+    		LOG.error("[ No CorrelationID provided when listening to JMS message, aborting ]");
+    		throw new AuditMessageException("No CorrelationID provided!");
+    	}
+    	
+    	Connection connection=null;
 
-            if (correlationId == null || correlationId.isEmpty()) {
-                LOG.error("[ No CorrelationID provided when listening to JMS message, aborting ]");
-                throw new AuditMessageException("No CorrelationID provided!");
-            }
-            connectToQueue();
+        try {
+            connection = connectionFactory.createConnection();
+            final Session session = JMSUtils.connectToQueue(connection);
 
             T response = (T) session.createConsumer(responseQueue, "JMSCorrelationID='" + correlationId + "'").receive(TEN_SECONDS);
             if (response == null) {
@@ -92,7 +68,7 @@ public class ComponentMessageConsumerBean implements MessageConsumer, ConfigMess
             LOG.error("[ Error when getting medssage ] {}", e.getMessage());
             throw new AuditMessageException("Error when retrieving message: ", e);
         } finally {
-            disconnectQueue();
+        	JMSUtils.disconnectQueue(connection);
         }
     }
 
@@ -105,23 +81,6 @@ public class ComponentMessageConsumerBean implements MessageConsumer, ConfigMess
         catch (AuditMessageException e) {
             LOG.error("[ Error when getting config message. ] {}", e.getMessage());
             throw new ConfigMessageException("[ Error when getting config message. ]");
-        }
-    }
-
-    private void connectToQueue() throws JMSException {
-        connection = connectionFactory.createConnection();
-        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        connection.start();
-    }
-
-    private void disconnectQueue() {
-        try {
-            if (connection != null) {
-                connection.stop();
-                connection.close();
-            }
-        } catch (JMSException e) {
-            LOG.error("[ Error when closing JMS connection ] {}", e.getMessage());
         }
     }
 
