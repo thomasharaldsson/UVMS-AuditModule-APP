@@ -11,6 +11,22 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.message.producer.bean;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.ec.fisheries.uvms.audit.message.constants.DataSourceQueue;
 import eu.europa.ec.fisheries.uvms.audit.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.audit.message.exception.AuditMessageException;
@@ -19,15 +35,6 @@ import eu.europa.ec.fisheries.uvms.config.constants.ConfigConstants;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
 import eu.europa.ec.fisheries.uvms.message.JMSUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.*;
-import javax.jms.*;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 @Stateless
 public class MessageProducerBean implements MessageProducer, ConfigMessageProducer {
@@ -36,28 +43,22 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
 
     private Queue responseQueue;
     private Queue configQueue;
-
-    @EJB
-    JMSConnectorBean connector;
+    private ConnectionFactory connectionFactory;
 
     @PostConstruct
     public void init() {
-        InitialContext ctx;
-        try {
-            ctx = new InitialContext();
-        } catch (Exception e) {
-            LOG.error("Failed to get InitialContext",e);
-            throw new RuntimeException(e);
-        }
-        responseQueue = JMSUtils.lookupQueue(ctx, MessageConstants.AUDIT_RESPONSE_QUEUE);
-        configQueue = JMSUtils.lookupQueue(ctx, ConfigConstants.CONFIG_MESSAGE_IN_QUEUE);
+    	connectionFactory = JMSUtils.lookupConnectionFactory();
+        responseQueue = JMSUtils.lookupQueue(MessageConstants.AUDIT_RESPONSE_QUEUE);
+        configQueue = JMSUtils.lookupQueue(ConfigConstants.CONFIG_MESSAGE_IN_QUEUE);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public String sendDataSourceMessage(String text, DataSourceQueue queue) throws AuditMessageException {
-        try {
-            Session session = connector.getNewSession();
+    	Connection connection=null;
+    	try {
+            connection = connectionFactory.createConnection();
+            final Session session = JMSUtils.connectToQueue(connection);
             TextMessage message = session.createTextMessage();
             message.setJMSReplyTo(responseQueue);
             message.setText(text);
@@ -74,16 +75,20 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
         } catch (Exception e) {
             LOG.error("[ Error when sending message. ] {0}", e.getMessage());
             throw new AuditMessageException("[ Error when sending message. ]", e);
+        } finally {
+        	JMSUtils.disconnectQueue(connection);
         }
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendMessageBackToRecipient(TextMessage requestMessage, String returnMessage) throws AuditMessageException {
-        try {
+    	Connection connection=null;
+    	try {
 
             LOG.info("[ Sending message back to recipient on queue ] {}", requestMessage.getJMSReplyTo());
-            Session session = connector.getNewSession();
+            connection = connectionFactory.createConnection();
+            final Session session = JMSUtils.connectToQueue(connection);
             TextMessage message = session.createTextMessage();
             message.setJMSCorrelationID(message.getJMSMessageID());
             message.setJMSDestination(requestMessage.getJMSReplyTo());
@@ -94,6 +99,8 @@ public class MessageProducerBean implements MessageProducer, ConfigMessageProduc
         } catch (Exception e) {
             LOG.error("[ Error when sending message. ] {}", e.getMessage());
             throw new AuditMessageException("[ Error when sending message. ]", e);
+        } finally {
+        	JMSUtils.disconnectQueue(connection);
         }
     }
 
