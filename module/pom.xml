@@ -22,10 +22,10 @@
                 <configuration>
                     <modules>
                         <ejbModule>
-                            <groupId>${project.groupId}</groupId>   
+                            <groupId>${project.groupId}</groupId>
                             <artifactId>audit-dbaccess-domain</artifactId>
                             <bundleFileName>audit-dbaccess-domain.jar</bundleFileName>
-                        </ejbModule>                    
+                        </ejbModule>
                         <ejbModule>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>audit-message</artifactId>
@@ -57,7 +57,7 @@
             <artifactId>audit-dbaccess-domain</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
-        </dependency>    	
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>audit-message</artifactId>
