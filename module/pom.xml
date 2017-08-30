@@ -3,7 +3,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>audit-module</artifactId>
-    <name>${project.parent.artifactId}-module</name>
+    <name>audit-module</name>
     <packaging>ear</packaging>
 
     <parent>
@@ -13,14 +13,19 @@
     </parent>
 
     <build>
-        <finalName>${project.name}</finalName>
         <plugins>
             <!-- This configuration specifies what ends up in application.xml -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
                     <modules>
+                        <ejbModule>
+                            <groupId>${project.groupId}</groupId>   
+                            <artifactId>audit-dbaccess-domain</artifactId>
+                            <bundleFileName>audit-dbaccess-domain.jar</bundleFileName>
+                        </ejbModule>                    
                         <ejbModule>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>audit-message</artifactId>
@@ -47,6 +52,12 @@
     </build>
 
     <dependencies>
+    	<dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>audit-dbaccess-domain</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+        </dependency>    	
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>audit-message</artifactId>

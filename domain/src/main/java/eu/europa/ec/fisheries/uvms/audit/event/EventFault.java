@@ -9,35 +9,30 @@ the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the impl
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
 copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+package eu.europa.ec.fisheries.uvms.audit.event;
 
-public class MessageTest {
+public class EventFault {
 
-    public MessageTest() {
+    private Integer code;
+    private String message;
+
+    public EventFault() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
+    public Integer getCode() {
+        return code;
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    public void setCode(Integer code) {
+        this.code = code;
     }
 
-    @Before
-    public void setUp() {
+    public String getMessage() {
+        return message;
     }
 
-    @After
-    public void tearDown() {
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
 }

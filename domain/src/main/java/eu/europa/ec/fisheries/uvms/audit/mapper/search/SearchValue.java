@@ -9,35 +9,32 @@ the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the impl
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
 copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+package eu.europa.ec.fisheries.uvms.audit.mapper.search;
 
-public class MessageTest {
+public class SearchValue {
 
-    public MessageTest() {
+    private SearchField field;
+    private String value;
+
+    public SearchValue(SearchField field, String value) {
+        this.field = field;
+        this.value = value;
     }
 
-    @BeforeClass
-    public static void setUpClass() {
+    public SearchField getField() {
+        return field;
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    public void setField(SearchField field) {
+        this.field = field;
     }
 
-    @Before
-    public void setUp() {
+    public String getValue() {
+        return value;
     }
 
-    @After
-    public void tearDown() {
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
 }

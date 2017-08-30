@@ -15,9 +15,11 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.*;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Queue;
+import javax.jms.Session;
 
-import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ import eu.europa.ec.fisheries.uvms.audit.message.consumer.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.audit.message.exception.AuditMessageException;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 
 @Stateless
 public class ComponentMessageConsumerBean implements MessageConsumer, ConfigMessageConsumer {

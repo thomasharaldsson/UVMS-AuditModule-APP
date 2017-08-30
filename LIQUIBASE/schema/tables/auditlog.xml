@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="andtho" id="audit-01">
+        
+        <createTable tableName="auditlog" remarks="Audit log table.">
+            
+            <column name="audit_id" type="bigint" remarks="The synthetic key.">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="audit_pk"/>
+            </column>
+            <column name="audit_user" type="varchar(60)" remarks="Reporting user.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="audit_operation" type="varchar(100)" remarks="The operation performed.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="audit_type" type="varchar(60)" remarks=".">
+                <constraints nullable="false"/>
+            </column>
+            <column name="audit_timestamp" type="timestamp" remarks="Time of the log.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="audit_affectedobject" type="varchar(500)" remarks="Reference id to the object the log is connected to.">
+                <constraints nullable="true"/>
+            </column>
+            <column name="audit_updattim" type="timestamp" remarks="Last updated date time.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="audit_upuser" type="varchar(60)" remarks="Last update userid.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="audit_comment" type="varchar(500)" remarks="Additional info.">
+                <constraints nullable="true"/>
+            </column>
+            
+        </createTable>
+
+		
+		<createSequence sequenceName="HIBERNATE_SEQUENCE"/>
+
+        <rollback>
+            <dropTable tableName="auditlog" cascadeConstraints="true" />
+        </rollback>
+        
+    </changeSet>
+
+</databaseChangeLog>

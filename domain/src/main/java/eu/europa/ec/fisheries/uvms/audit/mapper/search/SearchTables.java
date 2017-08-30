@@ -9,35 +9,26 @@ the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the impl
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
 copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+package eu.europa.ec.fisheries.uvms.audit.mapper.search;
 
-public class MessageTest {
+public enum SearchTables {
 
-    public MessageTest() {
+    AUDIT("a", "AuditLog");
+
+    private final String tableNameAlias;
+    private final String tableName;
+
+    private SearchTables(String tableNameAlias, String tableName) {
+        this.tableNameAlias = tableNameAlias;
+        this.tableName = tableName;
     }
 
-    @BeforeClass
-    public static void setUpClass() {
+    public String getTableName() {
+        return tableName;
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    public String getTableAlias() {
+        return tableNameAlias;
     }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
 }

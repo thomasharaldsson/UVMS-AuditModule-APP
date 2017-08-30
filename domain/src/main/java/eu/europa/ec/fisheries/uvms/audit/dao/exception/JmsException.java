@@ -9,35 +9,22 @@ the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the impl
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
 copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+package eu.europa.ec.fisheries.uvms.audit.dao.exception;
 
-public class MessageTest {
+/**
+ **/
+public class JmsException extends Exception {
 
-    public MessageTest() {
+    public JmsException() {
+        super();
     }
 
-    @BeforeClass
-    public static void setUpClass() {
+    public JmsException(String message) {
+        super(message);
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    public JmsException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
 }

@@ -14,12 +14,6 @@ package eu.europa.ec.fisheries.uvms.audit.service.bean;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import eu.europa.ec.fisheries.uvms.audit.AuditDomainModel;
-import eu.europa.ec.fisheries.uvms.audit.dto.ListResponseDto;
-import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelException;
-import eu.europa.ec.fisheries.uvms.audit.model.exception.InputArgumentException;
-import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
-import eu.europa.ec.fisheries.uvms.audit.service.constants.ServiceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +21,11 @@ import eu.europa.ec.fisheries.schema.audit.search.v1.AuditLogListQuery;
 import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogResponse;
 import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
-import eu.europa.ec.fisheries.uvms.audit.message.consumer.MessageConsumer;
-import eu.europa.ec.fisheries.uvms.audit.message.producer.MessageProducer;
+import eu.europa.ec.fisheries.uvms.audit.AuditDomainModel;
+import eu.europa.ec.fisheries.uvms.audit.dto.ListResponseDto;
+import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelException;
+import eu.europa.ec.fisheries.uvms.audit.model.exception.InputArgumentException;
+import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
 import eu.europa.ec.fisheries.uvms.audit.service.AuditService;
 import eu.europa.ec.fisheries.uvms.audit.service.exception.AuditServiceException;
 
@@ -37,7 +34,7 @@ public class AuditServiceBean implements AuditService {
 
     final static Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class);
 
-    @EJB(lookup = ServiceConstants.AUDIT_DOMAIN_MODEL_LOOKUP)
+    @EJB
     AuditDomainModel model;
 
     /**

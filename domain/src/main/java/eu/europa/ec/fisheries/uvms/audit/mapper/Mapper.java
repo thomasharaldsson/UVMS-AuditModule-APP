@@ -9,35 +9,19 @@ the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the impl
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
 copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+package eu.europa.ec.fisheries.uvms.audit.mapper;
 
-public class MessageTest {
+import javax.ejb.Local;
 
-    public MessageTest() {
-    }
+import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
+import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoMappingException;
+import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
+@Local
+public interface Mapper {
 
-    @AfterClass
-    public static void tearDownClass() {
-    }
+    public AuditLog toEntity(AuditLogType model) throws AuditDaoMappingException;
 
-    @Before
-    public void setUp() {
-    }
+    public AuditLogType toModel(AuditLog audit) throws AuditDaoMappingException;
 
-    @After
-    public void tearDown() {
-    }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
 }
