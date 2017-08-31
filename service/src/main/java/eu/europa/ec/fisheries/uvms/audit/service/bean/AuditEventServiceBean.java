@@ -57,7 +57,7 @@ public class AuditEventServiceBean implements AuditEventService {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void getData(@Observes @MessageRecievedEvent EventMessage message) {
-        LOG.info("Received MessageRecievedEvent");
+        LOG.info("Received MessageRecievedEvent:{}",message);
 
         TextMessage requestMessage = message.getJmsMessage();
 
@@ -66,14 +66,11 @@ public class AuditEventServiceBean implements AuditEventService {
 
             switch (baseRequest.getMethod()) {
             case CREATE:
-                LOG.info("CREATE");
-
                 CreateAuditLogRequest auditLogRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, CreateAuditLogRequest.class);
                 AuditLogType auditLog = auditLogRequest.getAuditLog();
                 auditService.createAuditLog(auditLog);
                 break;
             case AUDITLOG_LIST:
-                LOG.info("AUDITLOG_LIST");
                 GetAuditLogListByQueryRequest getAuditLogRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, GetAuditLogListByQueryRequest.class);
                 auditService.getList(getAuditLogRequest.getQuery());
                 break;
@@ -97,7 +94,7 @@ public class AuditEventServiceBean implements AuditEventService {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void returnError(@Observes @ErrorEvent EventMessage message) {
-        LOG.info("Received Error RecievedEvent but no logic is implemented yet");
+        LOG.info("Received Error RecievedEvent but no logic is implemented yet:{}",message);
     }
 
 }

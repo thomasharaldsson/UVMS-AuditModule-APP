@@ -54,11 +54,11 @@ public class AuditRestResource {
     @Path("/list")
     @RequiresFeature(UnionVMSFeature.viewAudit)
     public ResponseDto<AuditListResponseDto> getListByQuery(AuditLogListQuery query) {
-        LOG.info("Get list invoked in rest layer");
+        LOG.info("Get list invoked in rest layer:{}",query);
         try {
             return new ResponseDto(serviceLayer.getList(query), ResponseCode.OK);
         } catch (AuditServiceException | NullPointerException ex) {
-            LOG.error("[ Error when getting list. ]", ex);
+            LOG.error("[ Error when getting list. {}] {}",query, ex);
             return new ResponseDto(ex.getMessage(), ResponseCode.ERROR);
         }
     }

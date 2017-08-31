@@ -47,7 +47,6 @@ public class AuditServiceBean implements AuditService {
     @Override
     public GetAuditLogListByQueryResponse getList(AuditLogListQuery query) throws AuditServiceException {
         try {
-            LOG.info("Get list invoked in service layer");
             ListResponseDto auditLogs = model.getAuditListByQuery(query);
             if (auditLogs == null) {
                 LOG.error("[ Error when getting list, response from JMS Queue is null ]");
@@ -55,7 +54,7 @@ public class AuditServiceBean implements AuditService {
             }
             return AuditLogMapper.mapAuditListResponseToAuditLogListByQuery(auditLogs);
         } catch (AuditModelException | InputArgumentException e) {
-            LOG.error("[ Error when getting audit list by query ] {}", e.getMessage());
+            LOG.error("[ Error when getting audit list by query {}] {}",query, e.getMessage());
             throw new AuditServiceException("[ Error when getting audit list by query ]", e);
         }
 
@@ -71,7 +70,6 @@ public class AuditServiceBean implements AuditService {
     @Override
     public CreateAuditLogResponse createAuditLog(AuditLogType auditLogType) throws AuditServiceException {
         try {
-            LOG.info("Create audit log invoked in service layer");
             AuditLogType auditLog = model.createAuditLog(auditLogType);
             if (auditLog == null) {
                 LOG.error("[ Error when creating audit log, response from JMS Queue is null ]");

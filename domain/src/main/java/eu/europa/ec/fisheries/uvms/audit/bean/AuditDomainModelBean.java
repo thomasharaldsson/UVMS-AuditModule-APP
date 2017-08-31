@@ -50,8 +50,6 @@ public class AuditDomainModelBean implements AuditDomainModel {
 
     @Override
     public ListResponseDto getAuditListByQuery(AuditLogListQuery query) throws AuditModelException, InputArgumentException {
-        LOG.info("Get list of audit entries from query.");
-
         if (query == null) {
             throw new InputArgumentException("Audit list query is null");
         }
@@ -92,22 +90,20 @@ public class AuditDomainModelBean implements AuditDomainModel {
             response.setAuditLogList(auditList);
             return response;
         } catch (AuditDaoMappingException | AuditDaoException | ParseException ex) {
-            LOG.error("[ Error when getting movement by query ] {} ", ex.getMessage());
+            LOG.error("[ Error when getting movement by query :{}] {} ",query, ex.getMessage());
             throw new AuditModelException(ex.getMessage(), ex);
         }
     }
 
     @Override
     public AuditLogType createAuditLog(AuditLogType auditLogType) throws AuditModelException, InputArgumentException {
-        LOG.info("Create audit log.");
-
         try {
             AuditLog auditLog = mapper.toEntity(auditLogType);
             auditLog = dao.createAuditLogEntity(auditLog);
 
             return mapper.toModel(auditLog);
         } catch (AuditDaoException | AuditDaoMappingException e) {
-            LOG.error("[ Error when creating audit log. ] {}", e.getMessage());
+            LOG.error("[ Error when creating audit log:{} ] {}",auditLogType, e.getMessage());
             throw new AuditModelException("Could not create audit log.", e);
         }
     }
