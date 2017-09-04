@@ -32,21 +32,7 @@ import javax.persistence.PersistenceContext;
 
 public class Dao {
 
+    @PersistenceContext(unitName = "auditPU")
     protected EntityManager em;
 
-    @PersistenceContext(unitName = "auditPostgresPU")
-    private EntityManager postgres;
-
-    @PersistenceContext(unitName = "auditOraclePU")
-    private EntityManager oracle;
-
-    @PostConstruct
-    public void initEntityManager() {
-        String dbDialect = System.getProperty("db.dialect");
-        if ("oracle".equalsIgnoreCase(dbDialect)) {
-            em = oracle;
-        } else {
-            em = postgres;
-        }
-    }
 }
