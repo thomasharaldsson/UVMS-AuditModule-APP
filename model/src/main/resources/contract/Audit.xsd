@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:audit="urn:audit.schema.fisheries.ec.europa.eu:v1" 
+            targetNamespace="urn:audit.schema.fisheries.ec.europa.eu:v1"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+            xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <xsd:complexType name="AuditLogType">
+        <xsd:sequence>
+            <xsd:element name="username" type="xsd:string"/>
+            <xsd:element name="operation" type="xsd:string"/>
+            <xsd:element name="objectType" type="xsd:string"/>
+            <xsd:element name="timestamp" type="xsd:dateTime"/>
+            <xsd:element name="affectedObject" type="xsd:string"/>
+            <xsd:element name="comment" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

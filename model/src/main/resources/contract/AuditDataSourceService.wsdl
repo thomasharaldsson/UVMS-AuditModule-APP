@@ -1,0 +1,187 @@
+<definitions name="AuditDataSource"
+             targetNamespace="urn:source.audit.schema.fisheries.ec.europa.eu:v1"
+             xmlns:source="urn:source.audit.schema.fisheries.ec.europa.eu:v1"
+             xmlns:audit="urn:audit.schema.fisheries.ec.europa.eu:v1"
+             xmlns:search="urn:search.audit.schema.fisheries.ec.europa.eu:v1"
+             xmlns:common="urn:common.audit.schema.fisheries.ec.europa.eu:v1"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:source.audit.schema.fisheries.ec.europa.eu:v1">
+
+            <xsd:import namespace="urn:common.audit.schema.fisheries.ec.europa.eu:v1" schemaLocation="AuditCommon.xsd"/>
+            <xsd:import namespace="urn:search.audit.schema.fisheries.ec.europa.eu:v1" schemaLocation="AuditSearch.xsd"/>
+            <xsd:import namespace="urn:audit.schema.fisheries.ec.europa.eu:v1" schemaLocation="Audit.xsd"/>
+
+            <!-- Audit Base Request -->
+            <xsd:simpleType name="AuditDataSourceMethod">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="AUDITLOG_LIST"/>
+                    <xsd:enumeration value="CREATE"/>
+                    <xsd:enumeration value="PING"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+
+            <xsd:complexType name="AuditBaseRequest" abstract="true">
+                <xsd:sequence>
+                    <xsd:element name="method" type="source:AuditDataSourceMethod"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- QueryList request -->
+            <xsd:element name="getAuditLogListByQueryRequest">
+                <xsd:complexType>
+                    <xsd:complexContent>
+                        <xsd:extension base="source:AuditBaseRequest">
+                            <xsd:sequence>
+                                <xsd:element name="query" type="search:AuditLogListQuery"/>
+                            </xsd:sequence>
+                        </xsd:extension>
+                    </xsd:complexContent>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="getAuditLogListByQueryResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="auditLog" type="audit:AuditLogType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xsd:element name="totalNumberOfPages" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+                        <xsd:element name="currentPage" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- Create audit log request -->
+            <xsd:element name="createAuditLogRequest">
+                <xsd:complexType>
+                    <xsd:complexContent>
+                        <xsd:extension base="source:AuditBaseRequest">
+                            <xsd:sequence>
+                                <xsd:element name="auditLog" type="audit:AuditLogType"/>
+                            </xsd:sequence>
+                        </xsd:extension>
+                    </xsd:complexContent>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="createAuditLogResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="auditLog" type="audit:AuditLogType" minOccurs="1" maxOccurs="1"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- Ping request -->
+            <xsd:element name="pingRequest">
+                <xsd:complexType>
+                    <xsd:complexContent>
+                        <xsd:extension base="source:AuditBaseRequest">
+                        </xsd:extension>
+                    </xsd:complexContent>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="pingResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="response" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+        </xsd:schema>
+    </types>
+
+    <message name="AuditException">
+        <part name="body" element="common:exceptionType"/>
+    </message>
+
+    <message name="GetAuditLogListRequest">
+        <part name="body" element="source:getAuditLogListByQueryRequest"/>
+    </message>
+    <message name="GetAuditLogListResponse">
+        <part name="body" element="source:getAuditLogListByQueryResponse"/>
+    </message>
+
+    <message name="CreateAuditLogRequest">
+        <part name="body" element="source:createAuditLogRequest"/>
+    </message>
+    <message name="CreateAuditLogResponse">
+        <part name="body" element="source:createAuditLogResponse"/>
+    </message>
+
+    <message name="PingRequest">
+        <part name="body" element="source:pingRequest"/>
+    </message>
+    <message name="PingResponse">
+        <part name="body" element="source:pingResponse"/>
+    </message>
+
+    <portType name="AuditDataSourcePortType">
+
+        <operation name="GetAuditLogList">
+            <input message="source:GetAuditLogListRequest"/>
+            <output message="source:GetAuditLogListResponse"/>
+            <fault name="AuditException" message="source:AuditException"/>
+        </operation>
+
+        <operation name="CreateAuditLog">
+            <input message="source:CreateAuditLogRequest"/>
+            <output message="source:CreateAuditLogResponse"/>
+            <fault name="AuditException" message="source:AuditException"/>
+        </operation>
+
+        <operation name="Ping">
+            <input message="source:PingRequest"/>
+            <output message="source:PingResponse"/>
+        </operation>
+
+    </portType>
+
+    <binding name="AuditDataSourceSoapBinding" type="source:AuditDataSourcePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <operation name="GetAuditLogList">
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="AuditException">
+                <soap:fault name="AuditException" use="literal"/>
+            </fault>
+        </operation>
+        
+        <operation name="CreateAuditLog">
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="AuditException">
+                <soap:fault name="AuditException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="Ping">
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="AuditDataSourceQueueService">
+        <port name="DataSourcePortType" binding="source:AuditDataSourceSoapBinding">
+            <soap:address location="http://REPLACE_ME"/>
+        </port>
+    </service>
+
+</definitions>
