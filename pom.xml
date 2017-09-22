@@ -15,7 +15,7 @@
     <description>Maven project-archetype for UnionVms modules</description>
 
     <properties>
-    	<audit.api.check.against.version>3.0.0</audit.api.check.against.version>
+    	<audit.api.check.against.version>4.0.0</audit.api.check.against.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mockito.version>1.9.5</mockito.version>
         <junit.version>4.12</junit.version>
