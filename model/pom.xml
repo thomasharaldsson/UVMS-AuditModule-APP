@@ -88,7 +88,6 @@
 						<id>generate-vessel-module</id>
 						<phase>generate-sources</phase>
 						<configuration>
-							<sourceRoot>${basedir}/src/main/java/</sourceRoot>
 							<wsdlOptions>
 								<wsdlOption>
 									<wsdl>${basedir}/src/main/resources/contract/${wsdl.contract.name}.wsdl</wsdl>
@@ -110,7 +109,6 @@
 						<id>generate-vessel-datasource</id>
 						<phase>generate-sources</phase>
 						<configuration>
-							<sourceRoot>${basedir}/src/main/java/</sourceRoot>
 							<wsdlOptions>
 								<wsdlOption>
 
