@@ -31,10 +31,10 @@ import eu.europa.ec.fisheries.uvms.audit.message.constants.DataSourceQueue;
 import eu.europa.ec.fisheries.uvms.audit.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.audit.message.exception.AuditMessageException;
 import eu.europa.ec.fisheries.uvms.audit.message.producer.MessageProducer;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.config.constants.ConfigConstants;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
-import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 
 @Stateless
 public class MessageProducerBean implements MessageProducer, ConfigMessageProducer {

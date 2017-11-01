@@ -15,7 +15,8 @@ import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoMappingException;
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
 import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
