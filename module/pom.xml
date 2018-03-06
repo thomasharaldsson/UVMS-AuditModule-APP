@@ -41,7 +41,7 @@
                         <webModule>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>audit-rest</artifactId>
-                            <contextRoot>${parent.artifactId}</contextRoot>
+                            <contextRoot>${context.root}${parent.artifactId}</contextRoot>
                         </webModule>
                     </modules>
                     <skinnyWars>true</skinnyWars>
