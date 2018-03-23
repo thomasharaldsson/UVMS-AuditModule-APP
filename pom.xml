@@ -5,7 +5,7 @@
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom</artifactId>
         <relativePath />
-        <version>1.17-SNAPSHOT</version>
+        <version>1.18</version>
     </parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
@@ -23,7 +23,7 @@
         <javaee.version>7.0</javaee.version>
         <maven.plugin.version>3.4</maven.plugin.version>
         <usm4uvms.version>4.0.4</usm4uvms.version>
-        <uvms.common.version>3.0.13</uvms.common.version>
+        <uvms.common.version>3.0.15</uvms.common.version>
         <uvms.config.version>4.0.0</uvms.config.version>
         <uvms.config.artifactId>uvms-config</uvms.config.artifactId>
 
@@ -44,31 +44,31 @@
         	<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-gis-deps</artifactId>
-				<version>1.16</version>
+				<version>1.18</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-logging-deps</artifactId>
-				<version>1.16</version>
+				<version>1.18</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.17-SNAPSHOT</version>
+				<version>1.18</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-test-deps</artifactId>
-				<version>1.16</version>
+				<version>1.18</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-arquillian-deps</artifactId>
-				<version>1.16</version>
+				<version>1.18</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
