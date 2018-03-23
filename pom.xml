@@ -10,7 +10,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
     <artifactId>audit</artifactId>
-    <version>4.0.7-SNAPSHOT</version>
+    <version>4.0.8-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
 
