@@ -11,22 +11,17 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.dao.bean;
 
-import java.util.List;
-
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import eu.europa.ec.fisheries.uvms.audit.dao.Dao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.ec.fisheries.uvms.audit.dao.AuditDao;
+import eu.europa.ec.fisheries.uvms.audit.dao.Dao;
 import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoException;
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
 import eu.europa.ec.fisheries.uvms.audit.mapper.search.SearchValue;
 import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Stateless
 public class AuditDaoBean extends Dao implements AuditDao {
@@ -43,7 +38,6 @@ public class AuditDaoBean extends Dao implements AuditDao {
     public Long getAuditListSearchCount(String countSql, List<SearchValue> searchKeyValues) throws AuditDaoException {
         LOG.debug("SQL QUERY IN LIST COUNTNG: " + countSql);
         TypedQuery<Long> query = em.createQuery(countSql, Long.class);
-
         for (SearchValue searchValue : searchKeyValues) {
             switch (searchValue.getField()) {
             case FROM_DATE:
@@ -54,7 +48,6 @@ public class AuditDaoBean extends Dao implements AuditDao {
                 break;
             }
         }
-
         return query.getSingleResult();
     }
 
@@ -75,10 +68,8 @@ public class AuditDaoBean extends Dao implements AuditDao {
                     break;
                 }
             }
-
             query.setFirstResult(listSize * (page - 1));
             query.setMaxResults(listSize);
-
             return query.getResultList();
         } catch (IllegalArgumentException e) {
             LOG.error("[ Error getting movement list paginated ] {}", e.getMessage());

@@ -20,8 +20,8 @@ import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
 @Local
 public interface Mapper {
 
-    public AuditLog toEntity(AuditLogType model) throws AuditDaoMappingException;
+    AuditLog toEntity(AuditLogType model) throws AuditDaoMappingException;
 
-    public AuditLogType toModel(AuditLog audit) throws AuditDaoMappingException;
+    AuditLogType toModel(AuditLog audit) throws AuditDaoMappingException;
 
 }

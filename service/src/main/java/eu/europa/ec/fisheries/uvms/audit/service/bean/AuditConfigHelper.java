@@ -18,7 +18,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import eu.europa.ec.fisheries.uvms.audit.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.audit.service.config.ParameterKey;
 import eu.europa.ec.fisheries.uvms.config.constants.ConfigHelper;
 
@@ -27,6 +26,8 @@ public class AuditConfigHelper implements ConfigHelper {
 
 	@PersistenceContext
     protected EntityManager em;
+
+    private static final String MODULE_NAME = "audit";
 
     @Override
     public List<String> getAllParameterKeys() {
@@ -40,7 +41,7 @@ public class AuditConfigHelper implements ConfigHelper {
 
     @Override
     public String getModuleName() {
-        return MessageConstants.MODULE_NAME;
+        return MODULE_NAME;
     }
 
 	@Override

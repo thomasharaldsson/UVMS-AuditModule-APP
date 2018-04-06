@@ -35,7 +35,7 @@ public class AuditServiceBean implements AuditService {
     final static Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class);
 
     @EJB
-    AuditDomainModel model;
+    private AuditDomainModel model;
 
     /**
      * {@inheritDoc}

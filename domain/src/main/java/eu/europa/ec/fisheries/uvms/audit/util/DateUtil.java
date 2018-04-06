@@ -79,7 +79,7 @@ public class DateUtil {
         XMLGregorianCalendar xmlCalendar = null;
         try {
             xmlCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-        } catch (DatatypeConfigurationException ex) {
+        } catch (DatatypeConfigurationException ignored) {
         }
         return xmlCalendar;
     }
