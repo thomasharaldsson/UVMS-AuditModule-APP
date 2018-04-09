@@ -24,11 +24,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AuditListResponseDto {
 
     @XmlElement(required = true)
-    List<AuditDto> audit;
+    private List<AuditDto> audit;
     @XmlElement(required = true)
-    protected BigInteger totalNumberOfPages;
+    private BigInteger totalNumberOfPages;
     @XmlElement(required = true)
-    protected BigInteger currentPage;
+    private BigInteger currentPage;
 
     public List<AuditDto> getAudit() {
         return audit;

@@ -11,31 +11,27 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.bean;
 
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.ejb.EJB;
-import javax.ejb.Remote;
-import javax.ejb.Stateless;
-
-import eu.europa.ec.fisheries.uvms.audit.model.exception.InputArgumentException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.ec.fisheries.schema.audit.search.v1.AuditLogListQuery;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.AuditDomainModel;
 import eu.europa.ec.fisheries.uvms.audit.dao.AuditDao;
 import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoException;
 import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoMappingException;
-import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelException;
 import eu.europa.ec.fisheries.uvms.audit.dto.ListResponseDto;
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
 import eu.europa.ec.fisheries.uvms.audit.mapper.Mapper;
 import eu.europa.ec.fisheries.uvms.audit.mapper.search.SearchFieldMapper;
 import eu.europa.ec.fisheries.uvms.audit.mapper.search.SearchValue;
+import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelException;
+import eu.europa.ec.fisheries.uvms.audit.model.exception.InputArgumentException;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Stateless
 public class AuditDomainModelBean implements AuditDomainModel {
@@ -43,10 +39,10 @@ public class AuditDomainModelBean implements AuditDomainModel {
     final static Logger LOG = LoggerFactory.getLogger(AuditDomainModelBean.class);
 
     @EJB
-    AuditDao dao;
+    private AuditDao dao;
 
     @EJB
-    Mapper mapper;
+    private Mapper mapper;
 
     @Override
     public ListResponseDto getAuditListByQuery(AuditLogListQuery query) throws AuditModelException, InputArgumentException {
@@ -90,7 +86,7 @@ public class AuditDomainModelBean implements AuditDomainModel {
             response.setAuditLogList(auditList);
             return response;
         } catch (AuditDaoMappingException | AuditDaoException | ParseException ex) {
-            LOG.error("[ Error when getting movement by query :{}] {} ",query, ex.getMessage());
+            LOG.error("[ Error when getting movement by query :{}] {} ", query, ex.getMessage());
             throw new AuditModelException(ex.getMessage(), ex);
         }
     }
@@ -100,10 +96,9 @@ public class AuditDomainModelBean implements AuditDomainModel {
         try {
             AuditLog auditLog = mapper.toEntity(auditLogType);
             auditLog = dao.createAuditLogEntity(auditLog);
-
             return mapper.toModel(auditLog);
         } catch (AuditDaoException | AuditDaoMappingException e) {
-            LOG.error("[ Error when creating audit log:{} ] {}",auditLogType, e.getMessage());
+            LOG.error("[ Error when creating audit log:{} ] {}", auditLogType, e.getMessage());
             throw new AuditModelException("Could not create audit log.", e);
         }
     }

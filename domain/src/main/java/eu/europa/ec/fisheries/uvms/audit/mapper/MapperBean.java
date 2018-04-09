@@ -16,12 +16,10 @@ import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoMappingException;
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
 import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-
+import java.util.Date;
+import javax.ejb.Stateless;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ejb.Stateless;
-import java.util.Date;
 
 @Stateless
 public class MapperBean implements Mapper {

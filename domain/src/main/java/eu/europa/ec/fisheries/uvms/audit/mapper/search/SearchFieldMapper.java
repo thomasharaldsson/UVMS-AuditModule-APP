@@ -11,6 +11,9 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.mapper.search;
 
+import eu.europa.ec.fisheries.schema.audit.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.audit.search.v1.SearchKey;
+import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditSearchMapperException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,14 +21,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import eu.europa.ec.fisheries.schema.audit.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.audit.search.v1.SearchKey;
-import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoMappingException;
-import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditSearchMapperException;
 
 public class SearchFieldMapper {
 
@@ -42,7 +39,7 @@ public class SearchFieldMapper {
     public static String createSelectSearchSql(List<SearchValue> searchFields, boolean isDynamic) throws ParseException {
         StringBuilder selectBuffer = new StringBuilder();
         selectBuffer.append("SELECT ").append(SearchTables.AUDIT.getTableAlias()).append(" FROM ").append(SearchTables.AUDIT.getTableName())
-        .append(" ").append(SearchTables.AUDIT.getTableAlias()).append(" ");
+                .append(" ").append(SearchTables.AUDIT.getTableAlias()).append(" ");
         if (searchFields != null) {
             selectBuffer.append(createSearchSql(searchFields, isDynamic));
         }
@@ -52,7 +49,6 @@ public class SearchFieldMapper {
     }
 
     /**
-     *
      * Creates a JPQL count query based on the search fields. This is used for
      * when paginating lists
      *
@@ -64,7 +60,7 @@ public class SearchFieldMapper {
     public static String createCountSearchSql(List<SearchValue> searchFields, boolean isDynamic) throws ParseException {
         StringBuilder countBuffer = new StringBuilder();
         countBuffer.append("SELECT COUNT(").append(SearchTables.AUDIT.getTableAlias()).append(") FROM ").append(SearchTables.AUDIT.getTableName())
-        .append(" ").append(SearchTables.AUDIT.getTableAlias()).append(" ");
+                .append(" ").append(SearchTables.AUDIT.getTableAlias()).append(" ");
         if (searchFields != null) {
             countBuffer.append(createSearchSql(searchFields, isDynamic));
         }
@@ -73,7 +69,6 @@ public class SearchFieldMapper {
     }
 
     /**
-     *
      * Created the complete search SQL with joins and sets the values based on
      * the criterias
      *
@@ -83,29 +78,21 @@ public class SearchFieldMapper {
      * @throws ParseException
      */
     private static String createSearchSql(List<SearchValue> criterias, boolean dynamic) throws ParseException {
-
         String OPERATOR = " OR ";
         if (dynamic) {
             OPERATOR = " AND ";
         }
-
         StringBuilder builder = new StringBuilder();
-
         HashMap<SearchField, List<SearchValue>> orderedValues = combineSearchFields(criterias);
-
         if (!orderedValues.isEmpty()) {
-
             builder.append("WHERE ");
-
             boolean first = true;
             for (Entry<SearchField, List<SearchValue>> criteria : orderedValues.entrySet()) {
-
                 if (first) {
                     first = false;
                 } else {
                     builder.append(OPERATOR);
                 }
-
                 if (criteria.getValue().size() == 1) {
                     SearchValue searchValue = criteria.getValue().get(0);
                     builder.append(buildTableAliasname(searchValue.getField())).append(setValueAsType(searchValue));
@@ -119,7 +106,6 @@ public class SearchFieldMapper {
     }
 
     /**
-     *
      * Creates at String that sets values based on what class the SearchValue
      * has. A String class returns [ = 'value' ] A Integer returns [ = value ]
      * Date is specificaly handled and can return [ >= 'datavalue' ] or [ <=
@@ -131,18 +117,17 @@ public class SearchFieldMapper {
      */
     private static String setValueAsType(SearchValue entry) throws ParseException {
         StringBuilder builder = new StringBuilder();
-
         if (entry.getField().getClazz().isAssignableFrom(Date.class)) {
             switch (entry.getField()) {
-            case FROM_DATE:
-                builder.append(" >= ").append(":fromDate ");
-                break;
-            case TO_DATE:
-                builder.append(" <= ").append(":toDate ");
-                break;
-            default:
-                builder.append(" = ").append(":date ");
-                break;
+                case FROM_DATE:
+                    builder.append(" >= ").append(":fromDate ");
+                    break;
+                case TO_DATE:
+                    builder.append(" <= ").append(":toDate ");
+                    break;
+                default:
+                    builder.append(" = ").append(":date ");
+                    break;
             }
         } else {
             builder.append(" = ").append(buildValueFromClassType(entry));
@@ -152,9 +137,8 @@ public class SearchFieldMapper {
     }
 
     /**
-     *
      * Builds a table alias for the query based on the search field
-     *
+     * <p>
      * EG [ theTableAlias.theColumnName ]
      *
      * @param field
@@ -167,11 +151,9 @@ public class SearchFieldMapper {
     }
 
     /**
-     *
      * Returns the representation of the value
-     *
+     * <p>
      * if Integer [ value ] else [ 'value' ]
-     *
      *
      * @param entry
      * @return
@@ -187,11 +169,9 @@ public class SearchFieldMapper {
     }
 
     /**
-     *
      * Builds an IN JPQL representation for lists of values
-     *
+     * <p>
      * The resulting String = [ mc.value IN ( 'ABC123', 'ABC321' ) ]
-     *
      *
      * @param searchValues
      * @param field
@@ -199,9 +179,7 @@ public class SearchFieldMapper {
      */
     private static String buildInSqlStatement(List<SearchValue> searchValues, SearchField field) {
         StringBuilder builder = new StringBuilder();
-
         builder.append(buildTableAliasname(field));
-
         builder.append(" IN ( ");
         boolean first = true;
         for (SearchValue searchValue : searchValues) {
@@ -217,7 +195,6 @@ public class SearchFieldMapper {
     }
 
     /**
-     *
      * Takes all the search values and categorizes them in lists to a key
      * according to the SearchField
      *
@@ -238,15 +215,13 @@ public class SearchFieldMapper {
     }
 
     /**
-     *
      * Converts List<ListCriteria> to List<SearchValue> so that a JPQL query can
      * be built based on the criterias
      *
      * @param listCriterias
      * @return
-     * @throws MovementDaoMappingException
      */
-    public static List<SearchValue> mapSearchField(List<ListCriteria> listCriterias) throws AuditDaoMappingException {
+    public static List<SearchValue> mapSearchField(List<ListCriteria> listCriterias) {
 
         if (listCriterias == null || listCriterias.isEmpty()) {
             LOG.debug(" Non valid search criteria when mapping ListCriterias to SearchValue, List is null or empty");
@@ -267,7 +242,6 @@ public class SearchFieldMapper {
     }
 
     /**
-     *
      * Maps the Search Key to a SearchField. All SearchKeys that are not a part
      * of Audit are excluded
      *
@@ -277,21 +251,19 @@ public class SearchFieldMapper {
      */
     private static SearchField mapCriteria(SearchKey key) throws AuditSearchMapperException {
         switch (key) {
-
-        case USER:
-            return SearchField.USER;
-        case OPERATION:
-            return SearchField.OPERATION;
-        case TYPE:
-            return SearchField.TYPE;
-        case TO_DATE:
-            return SearchField.TO_DATE;
-        case FROM_DATE:
-            return SearchField.FROM_DATE;
-        default:
-            throw new AuditSearchMapperException("No field found: " + key.name());
+            case USER:
+                return SearchField.USER;
+            case OPERATION:
+                return SearchField.OPERATION;
+            case TYPE:
+                return SearchField.TYPE;
+            case TO_DATE:
+                return SearchField.TO_DATE;
+            case FROM_DATE:
+                return SearchField.FROM_DATE;
+            default:
+                throw new AuditSearchMapperException("No field found: " + key.name());
         }
-
     }
 
 }

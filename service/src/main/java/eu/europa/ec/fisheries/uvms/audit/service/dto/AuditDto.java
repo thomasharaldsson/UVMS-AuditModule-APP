@@ -22,15 +22,15 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class AuditDto {
 
     @XmlElement(required = true)
-    String userName;
+    private String userName;
     @XmlElement(required = true)
-    String operation;
+    private String operation;
     @XmlElement(required = true)
-    String objectType;
+    private String objectType;
     @XmlElement(required = true)
-    XMLGregorianCalendar timestamp;
+    private XMLGregorianCalendar timestamp;
     @XmlElement(required = true)
-    String affectedObject; // guid
+    private String affectedObject; // guid
 
     public XMLGregorianCalendar getTimestamp() {
         return timestamp;

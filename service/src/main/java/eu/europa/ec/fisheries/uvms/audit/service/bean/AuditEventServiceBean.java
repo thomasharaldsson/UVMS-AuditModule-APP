@@ -11,18 +11,6 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.service.bean;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.jms.TextMessage;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.ec.fisheries.schema.audit.source.v1.AuditBaseRequest;
 import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogRequest;
 import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryRequest;
@@ -32,12 +20,22 @@ import eu.europa.ec.fisheries.uvms.audit.message.event.ErrorEvent;
 import eu.europa.ec.fisheries.uvms.audit.message.event.MessageRecievedEvent;
 import eu.europa.ec.fisheries.uvms.audit.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.audit.message.exception.AuditMessageException;
-import eu.europa.ec.fisheries.uvms.audit.message.producer.MessageProducer;
+import eu.europa.ec.fisheries.uvms.audit.message.producer.bean.AuditConfigMessageProducerBean;
 import eu.europa.ec.fisheries.uvms.audit.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.audit.service.AuditEventService;
 import eu.europa.ec.fisheries.uvms.audit.service.AuditService;
 import eu.europa.ec.fisheries.uvms.audit.service.exception.AuditServiceException;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.jms.TextMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Stateless
 public class AuditEventServiceBean implements AuditEventService {
@@ -46,55 +44,50 @@ public class AuditEventServiceBean implements AuditEventService {
 
     @Inject
     @ErrorEvent
-    Event<EventMessage> errorEvent;
+    private Event<EventMessage> errorEvent;
 
     @EJB
-    MessageProducer producer;
+    private AuditConfigMessageProducerBean producer;
 
     @EJB
-    AuditService auditService;
+    private AuditService auditService;
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void getData(@Observes @MessageRecievedEvent EventMessage message) {
-        LOG.info("Received MessageRecievedEvent:{}",message);
-
+        LOG.info("Received MessageRecievedEvent:{}", message);
         TextMessage requestMessage = message.getJmsMessage();
-
         try {
             AuditBaseRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, AuditBaseRequest.class);
-
             switch (baseRequest.getMethod()) {
-            case CREATE:
-                CreateAuditLogRequest auditLogRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, CreateAuditLogRequest.class);
-                AuditLogType auditLog = auditLogRequest.getAuditLog();
-                auditService.createAuditLog(auditLog);
-                break;
-            case AUDITLOG_LIST:
-                GetAuditLogListByQueryRequest getAuditLogRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, GetAuditLogListByQueryRequest.class);
-                auditService.getList(getAuditLogRequest.getQuery());
-                break;
-            case PING:
-            	PingResponse pingResponse = new PingResponse();
-            	pingResponse.setResponse("pong");
-            	String response = JAXBMarshaller.marshallJaxBObjectToString(pingResponse);
-            	producer.sendMessageBackToRecipient(requestMessage, response);
-            	break;
-            default:
-                LOG.warn("No such method exists:{}", baseRequest.getMethod());
-                break;
+                case CREATE:
+                    CreateAuditLogRequest auditLogRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, CreateAuditLogRequest.class);
+                    AuditLogType auditLog = auditLogRequest.getAuditLog();
+                    auditService.createAuditLog(auditLog);
+                    break;
+                case AUDITLOG_LIST:
+                    GetAuditLogListByQueryRequest getAuditLogRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, GetAuditLogListByQueryRequest.class);
+                    auditService.getList(getAuditLogRequest.getQuery());
+                    break;
+                case PING:
+                    PingResponse pingResponse = new PingResponse();
+                    pingResponse.setResponse("pong");
+                    String response = JAXBMarshaller.marshallJaxBObjectToString(pingResponse);
+                    producer.sendMessageBackToRecipient(requestMessage, response);
+                    break;
+                default:
+                    LOG.warn("No such method exists:{}", baseRequest.getMethod());
+                    break;
             }
-
         } catch (ModelMapperException | AuditServiceException | AuditMessageException e) {
             errorEvent.fire(new EventMessage(message.getJmsMessage(), "Exception when sending response back to recipient : " + e.getMessage()));
         }
-
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void returnError(@Observes @ErrorEvent EventMessage message) {
-        LOG.info("Received Error RecievedEvent but no logic is implemented yet:{}",message);
+        LOG.info("Received Error RecievedEvent but no logic is implemented yet:{}", message);
     }
 
 }

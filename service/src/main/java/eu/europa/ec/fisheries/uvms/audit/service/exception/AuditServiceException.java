@@ -14,8 +14,7 @@ package eu.europa.ec.fisheries.uvms.audit.service.exception;
 public class AuditServiceException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public AuditServiceException() {
-    }
+    public AuditServiceException() {}
 
     public AuditServiceException(String message) {
         super(message);
