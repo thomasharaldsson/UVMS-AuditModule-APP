@@ -20,6 +20,8 @@ import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.jms.TextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +35,8 @@ public class AuditConfigMessageProducerBean extends AbstractProducer implements 
     @EJB
     private AuditConsumerBean auditConsumer;
 
-    public String sendDataSourceMessage(String text, DataSourceQueue queue) throws AuditMessageException {
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    private String sendDataSourceMessage(String text, DataSourceQueue queue) throws AuditMessageException {
         String corrId = null;
         try {
             switch (queue) {
@@ -51,6 +54,7 @@ public class AuditConfigMessageProducerBean extends AbstractProducer implements 
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendMessageBackToRecipient(TextMessage requestMessage, String returnMessage) throws AuditMessageException {
         try {
             LOG.info("[INFO] Sending message back to recipient on queue {}", requestMessage.getJMSReplyTo());
@@ -62,6 +66,7 @@ public class AuditConfigMessageProducerBean extends AbstractProducer implements 
     }
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public String sendConfigMessage(String text) throws ConfigMessageException {
         try {
             return sendDataSourceMessage(text, DataSourceQueue.CONFIG);

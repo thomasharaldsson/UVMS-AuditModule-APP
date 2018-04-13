@@ -17,8 +17,6 @@ import eu.europa.ec.fisheries.uvms.audit.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.jms.Message;
@@ -47,7 +45,6 @@ public class AuditMessageConsumerBean implements MessageListener {
     private Event<EventMessage> errorEvent;
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void onMessage(Message message) {
         LOG.debug("Message received in Audit Message MDB");
         TextMessage textMessage = (TextMessage) message;
