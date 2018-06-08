@@ -11,7 +11,7 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit;
 
-import javax.ejb.Remote;
+import javax.ejb.Local;
 
 import eu.europa.ec.fisheries.schema.audit.search.v1.AuditLogListQuery;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
@@ -19,7 +19,7 @@ import eu.europa.ec.fisheries.uvms.audit.dto.ListResponseDto;
 import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelException;
 import eu.europa.ec.fisheries.uvms.audit.model.exception.InputArgumentException;
 
-@Remote
+@Local
 public interface AuditDomainModel {
 
     ListResponseDto getAuditListByQuery(AuditLogListQuery query) throws AuditModelException, InputArgumentException;
