@@ -22,9 +22,9 @@
         <junit.version>4.12</junit.version>
         <javaee.version>7.0</javaee.version>
         <maven.plugin.version>3.4</maven.plugin.version>
-        <usm4uvms.version>4.0.13-SNAPSHOT</usm4uvms.version>
+        <usm4uvms.version>4.0.13</usm4uvms.version>
         <uvms.common.version>3.0.29</uvms.common.version>
-        <uvms.config.version>4.0.1</uvms.config.version>
+        <uvms.config.version>4.0.2</uvms.config.version>
         <uvms.config.artifactId>uvms-config</uvms.config.artifactId>
 
         <project.scm.id>github</project.scm.id>
@@ -35,7 +35,7 @@
             <id>weblogic</id>
             <properties>
                 <uvms.config.artifactId>uvms-config_WebLogic-2.1.3_</uvms.config.artifactId>
-                <uvms.config.version>4.0.0</uvms.config.version>
+                <uvms.config.version>4.0.2</uvms.config.version>
             <release.branch.name>uvms-3.0.5-C3PO</release.branch.name></properties>
         </profile>
         <!-- enforce-jdk-version -->
