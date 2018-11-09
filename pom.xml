@@ -20,7 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mockito.version>1.9.5</mockito.version>
         <junit.version>4.12</junit.version>
-        <javaee.version>7.0</javaee.version>
+        <javaee.version>8.0</javaee.version>
         <maven.plugin.version>3.4</maven.plugin.version>
         <usm4uvms.version>4.0.13</usm4uvms.version>
         <uvms.common.version>3.0.29</uvms.common.version>
@@ -126,6 +126,8 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
+            <version>${javaee.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

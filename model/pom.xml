@@ -28,8 +28,7 @@
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<scope>provided</scope>
-			<version>7.0</version>
+			<version>${javaee.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
