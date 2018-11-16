@@ -22,6 +22,7 @@
         <junit.version>4.12</junit.version>
         <javaee.version>8.0</javaee.version>
         <maven.plugin.version>3.4</maven.plugin.version>
+
         <usm4uvms.version>4.0.14-W14-J8</usm4uvms.version>
         <uvms.common.version>3.0.29</uvms.common.version>
         <uvms.config.version>4.0.2-W14-J8</uvms.config.version>
