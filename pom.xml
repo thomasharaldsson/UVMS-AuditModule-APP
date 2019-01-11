@@ -25,8 +25,11 @@
 
         <usm4uvms.version>4.0.14-W14-J8</usm4uvms.version>
         <uvms.common.version>3.0.29</uvms.common.version>
-        <uvms.config.version>4.0.2-W14-J8</uvms.config.version>
+        <uvms.config.version>4.0.3-W14J8</uvms.config.version>
         <uvms.config.artifactId>config-library</uvms.config.artifactId>
+
+        <javaee.version>8.0</javaee.version>
+        <hibernate.version>5.1.9.Final</hibernate.version>
 
         <project.scm.id>github</project.scm.id>
     </properties>
@@ -36,7 +39,7 @@
             <id>weblogic</id>
             <properties>
                 <uvms.config.artifactId>config-library_WebLogic-2.1.3_</uvms.config.artifactId>
-                <uvms.config.version>4.0.2-W14-J8</uvms.config.version>
+                <uvms.config.version>4.0.3-W14J8</uvms.config.version>
                 <release.branch.name>uvms-3.0.5-C3PO</release.branch.name>
             </properties>
         </profile>
@@ -81,12 +84,32 @@
     </profiles>
     <dependencyManagement>
         <dependencies>
-        	<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-gis-deps</artifactId>
-				<version>1.21</version>
-				<type>pom</type>
-			</dependency>
+            <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-gis-deps</artifactId>
+                <version>1.21</version>
+                <type>pom</type>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-entitymanager</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-logging-deps</artifactId>
