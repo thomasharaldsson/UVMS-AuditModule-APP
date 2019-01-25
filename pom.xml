@@ -24,7 +24,7 @@
         <maven.plugin.version>3.4</maven.plugin.version>
         <usm4uvms.version>4.0.12</usm4uvms.version>
         <uvms.common.version>3.0.21</uvms.common.version>
-        <uvms.config.version>4.0.1</uvms.config.version>
+        <uvms.config.version>4.0.2</uvms.config.version>
         <uvms.config.artifactId>uvms-config</uvms.config.artifactId>
 
         <project.scm.id>github</project.scm.id>
