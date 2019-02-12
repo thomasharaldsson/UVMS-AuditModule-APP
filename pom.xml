@@ -25,7 +25,7 @@
 
         <usm4uvms.version>4.0.14-W14-J8</usm4uvms.version>
         <uvms.common.version>3.3-W14J8</uvms.common.version>
-        <uvms.config.version>4.0.3-W14J8</uvms.config.version>
+        <uvms.config.version>4.1-W14J8</uvms.config.version>
         <uvms.config.artifactId>config-library</uvms.config.artifactId>
 
         <javaee.version>8.0</javaee.version>
@@ -39,7 +39,7 @@
             <id>weblogic</id>
             <properties>
                 <uvms.config.artifactId>config-library_WebLogic-2.1.3_</uvms.config.artifactId>
-                <uvms.config.version>4.0.3-W14J8</uvms.config.version>
+                <uvms.config.version>4.1-W14J8</uvms.config.version>
                 <release.branch.name>uvms-3.0.5-C3PO</release.branch.name>
             </properties>
         </profile>
