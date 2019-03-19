@@ -10,7 +10,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
     <artifactId>audit</artifactId>
-    <version>4.0.11-SNAPSHOT</version>
+    <version>4.0.11</version>
     <packaging>pom</packaging>
     <description>Maven project-archetype for UnionVms modules</description>
 
@@ -152,7 +152,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/UnionVMS/UVMS-AuditModule-APP.git</connection>
-        <tag>HEAD</tag>
+        <tag>audit-4.0.11</tag>
     </scm>
 
 
