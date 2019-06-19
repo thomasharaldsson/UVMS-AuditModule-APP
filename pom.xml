@@ -16,15 +16,15 @@
 
     <properties>
     	<audit.api.check.against.version>4.0.10</audit.api.check.against.version>
-    	<docker.dev.version>3.34.7.w16</docker.dev.version>
+    	<docker.dev.version>3.37.1.w17</docker.dev.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mockito.version>1.9.5</mockito.version>
         <junit.version>4.12</junit.version>
         <javaee.version>7.0</javaee.version>
         <maven.plugin.version>3.4</maven.plugin.version>
-        <usm4uvms.version>4.0.18</usm4uvms.version>
-        <uvms.common.version>3.0.29</uvms.common.version>
-        <uvms.config.version>4.0.3</uvms.config.version>
+        <usm4uvms.version>4.0.19</usm4uvms.version>
+        <uvms.common.version>4.0.0</uvms.common.version>
+        <uvms.config.version>4.0.4</uvms.config.version>
         <uvms.config.artifactId>uvms-config</uvms.config.artifactId>
 
         <project.scm.id>github</project.scm.id>
