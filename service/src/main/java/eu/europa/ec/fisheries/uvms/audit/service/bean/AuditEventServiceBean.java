@@ -53,7 +53,7 @@ public class AuditEventServiceBean implements AuditEventService {
 
     @Override
     public void getData(@Observes(during = TransactionPhase.BEFORE_COMPLETION) @MessageRecievedEvent EventMessage message) {
-        LOG.info("Received MessageRecievedEvent:{}", message);
+        LOG.debug("Received MessageRecievedEvent:{}", message);
         TextMessage requestMessage = message.getJmsMessage();
         try {
             AuditBaseRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, AuditBaseRequest.class);
