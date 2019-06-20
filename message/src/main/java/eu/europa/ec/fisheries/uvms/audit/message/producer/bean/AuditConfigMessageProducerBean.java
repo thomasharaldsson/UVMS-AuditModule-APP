@@ -11,18 +11,18 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.message.producer.bean;
 
-import eu.europa.ec.fisheries.uvms.audit.message.constants.DataSourceQueue;
-import eu.europa.ec.fisheries.uvms.audit.message.consumer.bean.AuditConsumerBean;
-import eu.europa.ec.fisheries.uvms.audit.message.exception.AuditMessageException;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
-import javax.ejb.EJB;
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.TextMessage;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Queue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,54 +30,27 @@ import org.slf4j.LoggerFactory;
 @LocalBean
 public class AuditConfigMessageProducerBean extends AbstractProducer implements ConfigMessageProducer {
 
-    final static Logger LOG = LoggerFactory.getLogger(AuditConfigMessageProducerBean.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuditConfigMessageProducerBean.class);
 
-    @EJB
-    private AuditConsumerBean auditConsumer;
+    @Resource(mappedName = "java:/" + MessageConstants.QUEUE_CONFIG)
+    private Queue destination;
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    private String sendDataSourceMessage(String text, DataSourceQueue queue) throws AuditMessageException {
-        String corrId = null;
-        try {
-            switch (queue) {
-                case INTEGRATION:
-                    LOG.error("[ERROR] Nothing configured for this queue!");
-                    break;
-                case CONFIG:
-                    corrId = sendModuleMessage(text, auditConsumer.getDestination());
-                    break;
-            }
-            return corrId;
-        } catch (Exception e) {
-            LOG.error("[ Error when sending message. ] {0}", e.getMessage());
-            throw new AuditMessageException("[ Error when sending message. ]", e);
-        }
-    }
+    @Resource(mappedName = "java:/" + MessageConstants.QUEUE_AUDIT)
+    private Queue replyToQueue;
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void sendMessageBackToRecipient(TextMessage requestMessage, String returnMessage) throws AuditMessageException {
-        try {
-            LOG.info("[INFO] Sending message back to recipient on queue {}", requestMessage.getJMSReplyTo());
-            sendResponseMessageToSender(requestMessage, returnMessage);
-        } catch (Exception e) {
-            LOG.error("[ Error when sending message. ] {}", e.getMessage());
-            throw new AuditMessageException("[ Error when sending message. ]", e);
-        }
+    @Override
+    public Destination getDestination() {
+        return destination;
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public String sendConfigMessage(String text) throws ConfigMessageException {
         try {
-            return sendDataSourceMessage(text, DataSourceQueue.CONFIG);
-        } catch (AuditMessageException e) {
+            return sendModuleMessage(text, replyToQueue);
+        } catch (JMSException e) {
             LOG.error("[ Error when sending config message. ] {}", e.getMessage());
             throw new ConfigMessageException("[ Error when sending config message. ]");
         }
-    }
-
-    @Override
-    public String getDestinationName() {
-        return eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants.QUEUE_CONFIG;
     }
 }

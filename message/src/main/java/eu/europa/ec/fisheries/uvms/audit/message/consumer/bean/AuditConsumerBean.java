@@ -12,14 +12,15 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package eu.europa.ec.fisheries.uvms.audit.message.consumer.bean;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Queue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,21 +28,25 @@ import org.slf4j.LoggerFactory;
 @LocalBean
 public class AuditConsumerBean extends AbstractConsumer implements ConfigMessageConsumer {
 
-    final static Logger LOG = LoggerFactory.getLogger(AuditConsumerBean.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuditConsumerBean.class);
+
+    private static final long CONFIG_TIMEOUT = 600000L;
+
+    @Resource(mappedName = "java:/" + MessageConstants.QUEUE_AUDIT)
+    private Queue destination;
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public <T> T getConfigMessage(String correlationId, Class type) throws ConfigMessageException {
-        try {
-            return getMessage(correlationId, type);
-        } catch (MessageException e) {
-            LOG.error("[ Error when getting config message. ] {}", e.getMessage());
-            throw new ConfigMessageException("[ Error when getting config message. ]");
-        }
+    public Destination getDestination() {
+        return destination;
     }
 
     @Override
-    public String getDestinationName() {
-        return MessageConstants.QUEUE_AUDIT;
+    public <T> T getConfigMessage(String correlationId, Class<T> type) throws ConfigMessageException {
+        try {
+            return getMessage(correlationId, type, CONFIG_TIMEOUT);
+        } catch (JMSException e) {
+            LOG.error("[ Error when getting config message. ] {}", e.getMessage());
+            throw new ConfigMessageException("[ Error when getting config message. ]");
+        }
     }
 }

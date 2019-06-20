@@ -19,7 +19,6 @@ import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.message.event.ErrorEvent;
 import eu.europa.ec.fisheries.uvms.audit.message.event.MessageRecievedEvent;
 import eu.europa.ec.fisheries.uvms.audit.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.audit.message.exception.AuditMessageException;
 import eu.europa.ec.fisheries.uvms.audit.message.producer.bean.AuditConfigMessageProducerBean;
 import eu.europa.ec.fisheries.uvms.audit.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
@@ -28,11 +27,11 @@ import eu.europa.ec.fisheries.uvms.audit.service.AuditService;
 import eu.europa.ec.fisheries.uvms.audit.service.exception.AuditServiceException;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
+import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +39,7 @@ import org.slf4j.LoggerFactory;
 @Stateless
 public class AuditEventServiceBean implements AuditEventService {
 
-    final static Logger LOG = LoggerFactory.getLogger(AuditEventServiceBean.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuditEventServiceBean.class);
 
     @Inject
     @ErrorEvent
@@ -53,9 +52,8 @@ public class AuditEventServiceBean implements AuditEventService {
     private AuditService auditService;
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void getData(@Observes @MessageRecievedEvent EventMessage message) {
-        LOG.info("Received MessageRecievedEvent:{}", message);
+    public void getData(@Observes(during = TransactionPhase.BEFORE_COMPLETION) @MessageRecievedEvent EventMessage message) {
+        LOG.debug("Received MessageRecievedEvent:{}", message);
         TextMessage requestMessage = message.getJmsMessage();
         try {
             AuditBaseRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, AuditBaseRequest.class);
@@ -73,21 +71,14 @@ public class AuditEventServiceBean implements AuditEventService {
                     PingResponse pingResponse = new PingResponse();
                     pingResponse.setResponse("pong");
                     String response = JAXBMarshaller.marshallJaxBObjectToString(pingResponse);
-                    producer.sendMessageBackToRecipient(requestMessage, response);
+                    producer.sendResponseMessageToSender(requestMessage, response);
                     break;
                 default:
                     LOG.warn("No such method exists:{}", baseRequest.getMethod());
                     break;
             }
-        } catch (ModelMapperException | AuditServiceException | AuditMessageException e) {
+        } catch (ModelMapperException | AuditServiceException | JMSException e) {
             errorEvent.fire(new EventMessage(message.getJmsMessage(), "Exception when sending response back to recipient : " + e.getMessage()));
         }
     }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void returnError(@Observes @ErrorEvent EventMessage message) {
-        LOG.info("Received Error RecievedEvent but no logic is implemented yet:{}", message);
-    }
-
 }

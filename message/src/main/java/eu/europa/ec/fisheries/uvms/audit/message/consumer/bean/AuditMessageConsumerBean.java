@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 })
 public class AuditMessageConsumerBean implements MessageListener {
 
-    final static Logger LOG = LoggerFactory.getLogger(AuditMessageConsumerBean.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuditMessageConsumerBean.class);
 
     @Inject
     @MessageRecievedEvent
