@@ -73,7 +73,7 @@ public class AuditServiceBean implements AuditService {
             AuditLogType auditLog = model.createAuditLog(auditLogType);
             if (auditLog == null) {
                 LOG.error("[ Error when creating audit log, response from JMS Queue is null ]");
-                throw new AuditServiceException("[ Error when creating audit log, response from JMS Queue is null ]");
+                throw new AuditServiceException("[ Error when creating audit log, response from JMS Queue is null ]");      //eh what?
             }
             return AuditLogMapper.mapAuditLogTypeToAuditLogResponse(auditLog);
         } catch (AuditModelException | InputArgumentException e) {

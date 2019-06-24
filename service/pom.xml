@@ -18,6 +18,11 @@
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
+
+        <docker.dev.start.phase>test-compile</docker.dev.start.phase>
+        <docker.liquibase.phase>test-compile</docker.liquibase.phase>
+        <docker.dev.stop.phase>verify</docker.dev.stop.phase>
+        <docker.dev.prestop.phase>install</docker.dev.prestop.phase>
     </properties>
 
     <dependencies>
@@ -41,6 +46,12 @@
             <artifactId>audit-message</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>fish.focus.uvms.maven</groupId>
+            <artifactId>uvms-pom-arquillian-deps</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
