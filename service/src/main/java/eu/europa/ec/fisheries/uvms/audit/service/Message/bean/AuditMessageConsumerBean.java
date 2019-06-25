@@ -9,21 +9,22 @@
  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
  copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.europa.ec.fisheries.uvms.audit.message.consumer.bean;
+package eu.europa.ec.fisheries.uvms.audit.service.Message.bean;
 
-import eu.europa.ec.fisheries.uvms.audit.message.event.ErrorEvent;
-import eu.europa.ec.fisheries.uvms.audit.message.event.MessageRecievedEvent;
-import eu.europa.ec.fisheries.uvms.audit.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.schema.audit.source.v1.*;
+import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
+import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.audit.service.AuditService;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @MessageDriven(mappedName = MessageConstants.QUEUE_AUDIT_EVENT, activationConfig = {
     @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
@@ -36,23 +37,40 @@ public class AuditMessageConsumerBean implements MessageListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuditMessageConsumerBean.class);
 
-    @Inject
-    @MessageRecievedEvent
-    private Event<EventMessage> messageReceivedEvent;
+    @EJB
+    private AuditConfigMessageProducerBean producer;
 
-    @Inject
-    @ErrorEvent
-    private Event<EventMessage> errorEvent;
+    @EJB
+    private AuditService auditService;
 
     @Override
     public void onMessage(Message message) {
-        LOG.debug("Message received in Audit Message MDB");
-        TextMessage textMessage = (TextMessage) message;
+        LOG.debug("Received MessageRecievedEvent:{}", message);
+        TextMessage requestMessage = (TextMessage) message;
         try {
-            messageReceivedEvent.fire(new EventMessage(textMessage));
-        } catch (NullPointerException e) {
-            LOG.error("[ Error when receiving message in audit: ]", e);
-            errorEvent.fire(new EventMessage(textMessage, "Error when receiving message in audit: " + e.getMessage()));
+            AuditDataSourceMethod method = AuditDataSourceMethod.fromValue(requestMessage.getStringProperty(MessageConstants.JMS_FUNCTION_PROPERTY));
+            if(method == null){
+                AuditBaseRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, AuditBaseRequest.class);
+                method = baseRequest.getMethod();
+            }
+            switch (method) {
+                case CREATE:
+                    CreateAuditLogRequest auditLogRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, CreateAuditLogRequest.class);
+                    AuditLogType auditLog = auditLogRequest.getAuditLog();
+                    auditService.createAuditLog(auditLog);
+                    break;
+                case PING:
+                    PingResponse pingResponse = new PingResponse();
+                    pingResponse.setResponse("pong");
+                    String response = JAXBMarshaller.marshallJaxBObjectToString(pingResponse);
+                    producer.sendResponseMessageToSender(requestMessage, response);
+                    break;
+                default:
+                    LOG.warn("No such method exists:{}", method);
+                    break;
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
         }
     }
 }

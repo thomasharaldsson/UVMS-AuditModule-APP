@@ -9,31 +9,35 @@ the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the impl
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
 copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.europa.ec.fisheries.uvms.audit.message.consumer.bean;
+package eu.europa.ec.fisheries.uvms.audit.service.Message.bean;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
-import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
-import javax.annotation.Resource;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Queue;
+import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Resource;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Queue;
+
 @Stateless
 @LocalBean
-public class AuditConsumerBean extends AbstractConsumer implements ConfigMessageConsumer {
+public class AuditConfigMessageProducerBean extends AbstractProducer implements ConfigMessageProducer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AuditConsumerBean.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuditConfigMessageProducerBean.class);
 
-    private static final long CONFIG_TIMEOUT = 600000L;
+    @Resource(mappedName = "java:/" + MessageConstants.QUEUE_CONFIG)
+    private Queue destination;
 
     @Resource(mappedName = "java:/" + MessageConstants.QUEUE_AUDIT)
-    private Queue destination;
+    private Queue replyToQueue;
 
     @Override
     public Destination getDestination() {
@@ -41,12 +45,13 @@ public class AuditConsumerBean extends AbstractConsumer implements ConfigMessage
     }
 
     @Override
-    public <T> T getConfigMessage(String correlationId, Class<T> type) throws ConfigMessageException {
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public String sendConfigMessage(String text) throws ConfigMessageException {
         try {
-            return getMessage(correlationId, type, CONFIG_TIMEOUT);
+            return sendModuleMessage(text, replyToQueue);
         } catch (JMSException e) {
-            LOG.error("[ Error when getting config message. ] {}", e.getMessage());
-            throw new ConfigMessageException("[ Error when getting config message. ]");
+            LOG.error("[ Error when sending config message. ] {}", e.getMessage());
+            throw new ConfigMessageException("[ Error when sending config message. ]");
         }
     }
 }

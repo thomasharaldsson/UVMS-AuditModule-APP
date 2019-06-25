@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.uvms.audit.service;
 
 import eu.europa.ec.fisheries.schema.config.types.v1.PullSettingsStatus;
 import eu.europa.ec.fisheries.schema.config.types.v1.SettingType;
-import eu.europa.ec.fisheries.uvms.audit.message.producer.bean.AuditConfigMessageProducerBean;
+import eu.europa.ec.fisheries.uvms.audit.service.Message.bean.AuditConfigMessageProducerBean;
 import eu.europa.ec.fisheries.uvms.config.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.config.model.mapper.ModuleResponseMapper;
 

@@ -66,6 +66,7 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
         criteria.setValue(DateUtil.parseUTCDateToString(audit.getTimestamp().toGregorianCalendar().getTime()));
         query.getAuditSearchCriteria().add(criteria);
         GetAuditLogListByQueryResponse response = auditServiceBean.getList(query);
+
         assertEquals(1, response.getAuditLog().size());
         AuditLogType log = response.getAuditLog().get(0);
         assertEquals(audit.getAffectedObject(), log.getAffectedObject());

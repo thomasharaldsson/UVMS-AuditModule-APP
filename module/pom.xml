@@ -28,10 +28,6 @@
                         </ejbModule>
                         <ejbModule>
                             <groupId>${project.groupId}</groupId>
-                            <artifactId>audit-message</artifactId>
-                        </ejbModule>
-                        <ejbModule>
-                            <groupId>${project.groupId}</groupId>
                             <artifactId>audit-service</artifactId>
                         </ejbModule>
                         <jarModule>
@@ -55,12 +51,6 @@
     	<dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>audit-dbaccess-domain</artifactId>
-            <version>${project.version}</version>
-            <type>ejb</type>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>audit-message</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
         </dependency>

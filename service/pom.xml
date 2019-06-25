@@ -42,10 +42,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>audit-message</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>${uvms.config.artifactId}</artifactId>
+            <version>${uvms.config.version}</version>
         </dependency>
         <dependency>
             <groupId>fish.focus.uvms.maven</groupId>
