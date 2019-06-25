@@ -5,8 +5,8 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="\schema\tables\auditlog.xml"/>
-    <include file="\schema\tables\parameter.xml"/>
+    <include file="..\..\schema\tables\auditlog.xml" relativeToChangelogFile="true"/>
+    <include file="..\..\schema\tables\parameter.xml" relativeToChangelogFile="true"/>
                 
     <!--<changeSet id="createTables" author="emtudorsm" runOnChange="true" runAlways="true" runInTransaction="true" failOnError="true">
             <preConditions onFail="MARK_RAN">
