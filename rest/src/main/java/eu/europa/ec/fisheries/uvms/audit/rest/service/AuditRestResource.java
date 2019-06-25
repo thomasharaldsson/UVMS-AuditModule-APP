@@ -19,6 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.uvms.audit.service.bean.AuditServiceBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.fisheries.schema.audit.search.v1.AuditLogListQuery;
 import eu.europa.ec.fisheries.uvms.audit.rest.dto.ResponseCode;
 import eu.europa.ec.fisheries.uvms.audit.rest.dto.ResponseDto;
-import eu.europa.ec.fisheries.uvms.audit.service.dto.AuditListResponseDto;
 import eu.europa.ec.fisheries.uvms.rest.security.RequiresFeature;
 import eu.europa.ec.fisheries.uvms.rest.security.UnionVMSFeature;
 
@@ -52,7 +52,7 @@ public class AuditRestResource {
     @Produces(value = { MediaType.APPLICATION_JSON })
     @Path("/list")
     @RequiresFeature(UnionVMSFeature.viewAudit)
-    public ResponseDto<AuditListResponseDto> getListByQuery(AuditLogListQuery query) {
+    public ResponseDto<GetAuditLogListByQueryResponse> getListByQuery(AuditLogListQuery query) {
         LOG.info("Get list invoked in rest layer:{}",query);
         try {
             return new ResponseDto(serviceLayer.getList(query), ResponseCode.OK);
