@@ -9,12 +9,15 @@ the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the impl
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
 copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.europa.ec.fisheries.uvms.audit.message.producer.bean;
+package eu.europa.ec.fisheries.uvms.audit.service.message;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -23,8 +26,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Queue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Stateless
 @LocalBean

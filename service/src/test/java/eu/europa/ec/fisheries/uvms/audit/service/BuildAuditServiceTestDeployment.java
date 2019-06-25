@@ -24,15 +24,14 @@ public abstract class BuildAuditServiceTestDeployment {
                 .importRuntimeAndTestDependencies().resolve().withTransitivity().asFile();
         testWar.addAsLibraries(files);
 
-        files = Maven.resolver().loadPomFromFile("pom.xml")
+        /*files = Maven.resolver().loadPomFromFile("pom.xml")
                 .resolve("eu.europa.ec.fisheries.uvms.audit:audit-message").withTransitivity().asFile();
-        testWar.addAsLibraries(files);
+        testWar.addAsLibraries(files);*/
         
         testWar.addPackages(true, "eu.europa.ec.fisheries.uvms.audit.service");
 
 
         testWar.addAsWebInfResource("ejb-jar.xml");
-        testWar.addAsResource("persistence-integration.xml", "META-INF/persistence.xml");
         testWar.addAsResource("beans.xml", "META-INF/beans.xml");
 
 		return testWar;

@@ -30,12 +30,12 @@ public class JMSHelper {
     /*public PingResponse pingMovement() throws Exception {
         String pingRequest = MovementModuleRequestMapper.mapToPingRequest(null);
         String correlationId = sendMovementMessage(pingRequest, null, null);
-        Message response = listenForResponse(correlationId);
+        message response = listenForResponse(correlationId);
         return JAXBMarshaller.unmarshallTextMessage((TextMessage) response, PingResponse.class);
     }*/
 
 
-    public String sendAuditMessage(String text) throws Exception {
+    public String sendAuditMessage(String text, String function) throws Exception {
         Connection connection = connectionFactory.createConnection();
         try {
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -43,6 +43,7 @@ public class JMSHelper {
             Queue movementQueue = session.createQueue(MOVEMENT_QUEUE);
 
             TextMessage message = session.createTextMessage();
+            message.setStringProperty(MessageConstants.JMS_FUNCTION_PROPERTY, function);
             message.setText(text);
             message.setJMSReplyTo(responseQueue);
 
