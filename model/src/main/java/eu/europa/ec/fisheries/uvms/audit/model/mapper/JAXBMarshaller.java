@@ -11,7 +11,6 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.model.mapper;
 
-import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -40,9 +39,8 @@ public class JAXBMarshaller {
      * @param data
      * @return
      * @throws
-     * eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException
      */
-    public static <T> String marshallJaxBObjectToString(T data) throws AuditModelMarshallException {
+    public static <T> String marshallJaxBObjectToString(T data) {
         try {
             JAXBContext jaxbContext = contexts.get(data.getClass().getName());
             if (jaxbContext == null) {
@@ -62,7 +60,7 @@ public class JAXBMarshaller {
             return marshalled;
         } catch (JAXBException ex) {
             LOG.error("[ Error when marshalling object to string ] {} ", ex.getMessage());
-            throw new AuditModelMarshallException("[ Error when marshalling Object to String ]", ex);
+            throw new RuntimeException("[ Error when marshalling Object to String ]", ex);
         }
     }
 
@@ -75,9 +73,8 @@ public class JAXBMarshaller {
      * @param clazz pperException
      * @return
      * @throws
-     * eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException
      */
-    public static <R> R unmarshallTextMessage(TextMessage textMessage, Class clazz) throws AuditModelMarshallException {
+    public static <R> R unmarshallTextMessage(TextMessage textMessage, Class clazz)  {
         try {
             JAXBContext jc = contexts.get(clazz.getName());
             if (jc == null) {
@@ -96,7 +93,7 @@ public class JAXBMarshaller {
             return object;
         } catch (JMSException | JAXBException ex) {
             LOG.error("[ Error when Text message to object ] {} ", ex.getMessage());
-            throw new AuditModelMarshallException("[Error when unmarshalling response in ResponseMapper ]", ex);
+            throw new RuntimeException("[Error when unmarshalling response in ResponseMapper ]", ex);
         }
     }
 

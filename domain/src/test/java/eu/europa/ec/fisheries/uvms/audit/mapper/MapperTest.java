@@ -17,22 +17,16 @@ import static org.junit.Assert.assertSame;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.MockData;
-import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoException;
-import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoMappingException;
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
-import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MapperTest {
 
-    @InjectMocks
-    private MapperBean mapper;
 
     @Before
     public void setUp() {
@@ -40,10 +34,10 @@ public class MapperTest {
     }
 
     @Test
-    public void testEntityToModel() throws AuditDaoException, AuditDaoMappingException {
+    public void testEntityToModel() {
         long id = 1;
         AuditLog entity = MockData.getEntity(id);
-        AuditLogType result = mapper.toModel(entity);
+        AuditLogType result = AuditLogMapper.toModel(entity);
 
         assertSame(entity.getAffectedObject(), result.getAffectedObject());
         assertSame(entity.getObjectType(), result.getObjectType());
@@ -53,10 +47,10 @@ public class MapperTest {
     }
 
     @Test
-    public void testModelToEntity() throws AuditDaoException, AuditDaoMappingException {
+    public void testModelToEntity() {
         Integer id = 1;
         AuditLogType model = MockData.getModel(id);
-        AuditLog result = mapper.toEntity(model);
+        AuditLog result = AuditLogMapper.toEntity(model);
 
         assertSame(model.getAffectedObject(), result.getAffectedObject());
         assertSame(model.getObjectType(), result.getObjectType());

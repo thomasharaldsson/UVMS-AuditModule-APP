@@ -14,7 +14,7 @@ package eu.europa.ec.fisheries.uvms.audit.service.message;
 import eu.europa.ec.fisheries.schema.audit.source.v1.*;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.audit.service.AuditService;
+import eu.europa.ec.fisheries.uvms.audit.service.bean.AuditServiceBean;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
+import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
@@ -40,8 +41,8 @@ public class AuditMessageConsumerBean implements MessageListener {
     @EJB
     private AuditConfigMessageProducerBean producer;
 
-    @EJB
-    private AuditService auditService;
+    @Inject
+    private AuditServiceBean auditService;
 
     @Override
     public void onMessage(Message message) {

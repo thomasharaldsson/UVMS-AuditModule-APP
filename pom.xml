@@ -15,7 +15,8 @@
     <description>Maven project-archetype for UnionVms modules</description>
 
     <properties>
-    	<audit.api.check.against.version>4.0.10</audit.api.check.against.version>
+        <installAtEnd>false</installAtEnd>
+
     	<docker.dev.version>3.37.1.w17</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>audit</docker.liquibase.db.user>

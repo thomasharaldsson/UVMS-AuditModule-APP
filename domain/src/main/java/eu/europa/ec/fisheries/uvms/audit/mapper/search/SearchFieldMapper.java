@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.uvms.audit.mapper.search;
 
 import eu.europa.ec.fisheries.schema.audit.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.audit.search.v1.SearchKey;
-import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditSearchMapperException;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -233,8 +233,8 @@ public class SearchFieldMapper {
             try {
                 SearchField field = mapCriteria(criteria.getKey());
                 searchFields.add(new SearchValue(field, criteria.getValue()));
-            } catch (AuditSearchMapperException ex) {
-                LOG.debug("[ Error when mapping to search field.. continuing with other criterias ]");
+            } catch (Exception ex) {
+                LOG.debug("[ Error when mapping to search field.. continuing with other criterias. Errormessage: {}  {}]" , ex.getMessage(), ex);
             }
         }
 
@@ -249,7 +249,7 @@ public class SearchFieldMapper {
      * @return
      * @throws AuditSearchMapperException
      */
-    private static SearchField mapCriteria(SearchKey key) throws AuditSearchMapperException {
+    private static SearchField mapCriteria(SearchKey key) {
         switch (key) {
             case USER:
                 return SearchField.USER;
@@ -262,7 +262,7 @@ public class SearchFieldMapper {
             case FROM_DATE:
                 return SearchField.FROM_DATE;
             default:
-                throw new AuditSearchMapperException("No field found: " + key.name());
+                throw new IllegalArgumentException("No field found: " + key.name());
         }
     }
 

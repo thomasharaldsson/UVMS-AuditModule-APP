@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogRequest;
 import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.audit.service.bean.AuditServiceBean;
 import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
@@ -16,7 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.annotation.Resource;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.jms.TextMessage;
 import java.math.BigInteger;
@@ -33,13 +34,13 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    @EJB
-    AuditService auditServiceBean;
+    @Inject
+    AuditServiceBean auditServiceBean;
 
     JMSHelper jmsHelper;
 
     @Before
-    public void cleanJMS() throws Exception {
+    public void cleanJMS() {
         jmsHelper = new JMSHelper(connectionFactory);
     }
 

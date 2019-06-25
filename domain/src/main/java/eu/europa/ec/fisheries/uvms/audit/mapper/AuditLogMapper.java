@@ -9,28 +9,54 @@ the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the impl
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
 copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.europa.ec.fisheries.uvms.audit.model.mapper;
-
-import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogResponse;
-import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryResponse;
-import eu.europa.ec.fisheries.uvms.audit.dto.ListResponseDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package eu.europa.ec.fisheries.uvms.audit.mapper;
 
 import eu.europa.ec.fisheries.schema.audit.source.v1.AuditDataSourceMethod;
 import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogRequest;
+import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogResponse;
+import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
-import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException;
+import eu.europa.ec.fisheries.uvms.audit.dto.ListResponseDto;
+import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
+import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import java.util.Date;
+
 
 public class AuditLogMapper {
 
-    final static Logger LOG = LoggerFactory.getLogger(AuditLogMapper.class);
 
-    public static String mapToAuditLog(String objectType, String operation, String affectedObject, String username) throws AuditModelMarshallException {
+    public static AuditLogType toModel(AuditLog auditlog) {
+        AuditLogType model = new AuditLogType();
+        model.setAffectedObject(auditlog.getAffectedObject());
+        model.setOperation(auditlog.getOperation());
+        model.setObjectType(auditlog.getObjectType());
+        model.setTimestamp(DateUtil.getXMLGregorianCalendarInUTC(auditlog.getTimestamp()));
+        model.setUsername(auditlog.getUsername());
+        model.setComment(auditlog.getComment());
+        return model;
+    }
+
+    public static AuditLog toEntity(AuditLogType auditLogType) {
+        Date nowDateUTC = DateUtils.getNowDateUTC();
+        AuditLog auditlog = new AuditLog();
+        auditlog.setUsername(auditLogType.getUsername());
+        auditlog.setOperation(auditLogType.getOperation());
+        auditlog.setObjectType(auditLogType.getObjectType());
+        auditlog.setTimestamp(nowDateUTC);
+        auditlog.setAffectedObject(auditLogType.getAffectedObject());
+        auditlog.setUpdated(nowDateUTC);
+        auditlog.setUpdatedBy(auditLogType.getUsername());
+        auditlog.setComment(auditLogType.getComment());
+        return auditlog;
+    }
+
+    public static String mapToAuditLog(String objectType, String operation, String affectedObject, String username) {
         return mapToAuditLog(objectType, operation, affectedObject, null, username);
     }
 
-    public static String mapToAuditLog(String objectType, String operation, String affectedObject, String comment, String username) throws AuditModelMarshallException {
+    public static String mapToAuditLog(String objectType, String operation, String affectedObject, String comment, String username) {
         CreateAuditLogRequest createAuditLogRequest = new CreateAuditLogRequest();
 
         AuditLogType auditLogType = new AuditLogType();
@@ -60,4 +86,5 @@ public class AuditLogMapper {
         response.setAuditLog(auditLog);
         return response;
     }
+
 }

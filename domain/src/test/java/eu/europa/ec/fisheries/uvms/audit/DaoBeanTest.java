@@ -24,7 +24,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import eu.europa.ec.fisheries.uvms.audit.dao.bean.AuditDaoBean;
-import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoException;
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,14 +41,14 @@ public class DaoBeanTest {
     }
 
     @Test
-    public void createAuditLogEntity() throws AuditDaoException {
+    public void createAuditLogEntity() {
         AuditLog auditLog = new AuditLog();
         dao.createAuditLogEntity(auditLog);
         verify(em).persist(auditLog);
     }
 
     @Test
-    public void testDeleteVessel() throws AuditDaoException {
+    public void testDeleteVessel() {
         // em.remove(arg0);
     }
 

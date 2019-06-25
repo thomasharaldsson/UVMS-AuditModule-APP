@@ -11,31 +11,27 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.dao.bean;
 
-import eu.europa.ec.fisheries.uvms.audit.dao.AuditDao;
-import eu.europa.ec.fisheries.uvms.audit.dao.Dao;
-import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoException;
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
 import eu.europa.ec.fisheries.uvms.audit.mapper.search.SearchValue;
 import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Stateless
-public class AuditDaoBean extends Dao implements AuditDao {
+public class AuditDaoBean {
 
     final static Logger LOG = LoggerFactory.getLogger(AuditDaoBean.class);
 
-    @Override
-    public void deleteEntity(Long id) throws AuditDaoException {
-        LOG.info("Delete Entity not implemented yet.");
-        throw new AuditDaoException("Not implemented yet", null);
-    }
+    @PersistenceContext(unitName = "auditPU")
+    protected EntityManager em;
 
-    @Override
-    public Long getAuditListSearchCount(String countSql, List<SearchValue> searchKeyValues) throws AuditDaoException {
+    public Long getAuditListSearchCount(String countSql, List<SearchValue> searchKeyValues)  {
         LOG.debug("SQL QUERY IN LIST COUNTNG: " + countSql);
         TypedQuery<Long> query = em.createQuery(countSql, Long.class);
         for (SearchValue searchValue : searchKeyValues) {
@@ -51,44 +47,28 @@ public class AuditDaoBean extends Dao implements AuditDao {
         return query.getSingleResult();
     }
 
-    @Override
-    public List<AuditLog> getAuditListPaginated(Integer page, Integer listSize, String sql, List<SearchValue> searchKeyValues)
-            throws AuditDaoException {
-        try {
-            LOG.debug("SQL QUERY IN LIST PAGINATED: " + sql);
-            TypedQuery<AuditLog> query = em.createQuery(sql, AuditLog.class);
+    public List<AuditLog> getAuditListPaginated(Integer page, Integer listSize, String sql, List<SearchValue> searchKeyValues) {
+        LOG.debug("SQL QUERY IN LIST PAGINATED: " + sql);
+        TypedQuery<AuditLog> query = em.createQuery(sql, AuditLog.class);
 
-            for (SearchValue searchValue : searchKeyValues) {
-                switch (searchValue.getField()) {
-                case FROM_DATE:
-                    query.setParameter("fromDate", DateUtil.parseToUTCDate(searchValue.getValue()));
-                    break;
-                case TO_DATE:
-                    query.setParameter("toDate", DateUtil.parseToUTCDate(searchValue.getValue()));
-                    break;
-                }
+        for (SearchValue searchValue : searchKeyValues) {
+            switch (searchValue.getField()) {
+            case FROM_DATE:
+                query.setParameter("fromDate", DateUtil.parseToUTCDate(searchValue.getValue()));
+                break;
+            case TO_DATE:
+                query.setParameter("toDate", DateUtil.parseToUTCDate(searchValue.getValue()));
+                break;
             }
-            query.setFirstResult(listSize * (page - 1));
-            query.setMaxResults(listSize);
-            return query.getResultList();
-        } catch (IllegalArgumentException e) {
-            LOG.error("[ Error getting movement list paginated ] {}", e.getMessage());
-            throw new AuditDaoException("[ Error when getting list ] ", e);
-        } catch (Exception e) {
-            LOG.error("[ Error getting movement list paginated ]  {}", e.getMessage());
-            throw new AuditDaoException("[ Error when getting list ] ", e);
         }
+        query.setFirstResult(listSize * (page - 1));
+        query.setMaxResults(listSize);
+        return query.getResultList();
     }
 
-    @Override
-    public AuditLog createAuditLogEntity(AuditLog auditLog) throws AuditDaoException {
-        try {
-            em.persist(auditLog);
-            return auditLog;
-        } catch (Exception e) {
-            LOG.error("[ Error when creating. ] {}", e.getMessage());
-            throw new AuditDaoException("[ Error when creating. ]", e);
-        }
+    public AuditLog createAuditLogEntity(AuditLog auditLog) {
+        em.persist(auditLog);
+        return auditLog;
     }
 
 }
