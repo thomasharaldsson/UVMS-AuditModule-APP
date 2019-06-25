@@ -13,48 +13,42 @@ package eu.europa.ec.fisheries.uvms.audit.bean;
 
 import eu.europa.ec.fisheries.schema.audit.search.v1.AuditLogListQuery;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
-import eu.europa.ec.fisheries.uvms.audit.AuditDomainModel;
-import eu.europa.ec.fisheries.uvms.audit.dao.AuditDao;
-import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoException;
-import eu.europa.ec.fisheries.uvms.audit.dao.exception.AuditDaoMappingException;
+import eu.europa.ec.fisheries.uvms.audit.dao.bean.AuditDaoBean;
 import eu.europa.ec.fisheries.uvms.audit.dto.ListResponseDto;
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
-import eu.europa.ec.fisheries.uvms.audit.mapper.Mapper;
+import eu.europa.ec.fisheries.uvms.audit.mapper.AuditLogMapper;
 import eu.europa.ec.fisheries.uvms.audit.mapper.search.SearchFieldMapper;
 import eu.europa.ec.fisheries.uvms.audit.mapper.search.SearchValue;
-import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelException;
-import eu.europa.ec.fisheries.uvms.audit.model.exception.InputArgumentException;
+
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Stateless
-public class AuditDomainModelBean implements AuditDomainModel {
+public class AuditDomainModelBean {
 
     final static Logger LOG = LoggerFactory.getLogger(AuditDomainModelBean.class);
 
-    @EJB
-    private AuditDao dao;
+    @Inject
+    private AuditDaoBean auditDao;
 
-    @EJB
-    private Mapper mapper;
 
-    @Override
-    public ListResponseDto getAuditListByQuery(AuditLogListQuery query) throws AuditModelException, InputArgumentException {
+    public ListResponseDto getAuditListByQuery(AuditLogListQuery query) {
         if (query == null) {
-            throw new InputArgumentException("Audit list query is null");
+            throw new IllegalArgumentException("Audit list query is null");
         }
 
         if (query.getPagination() == null || query.getPagination().getListSize() == null || query.getPagination().getPage() == null) {
-            throw new InputArgumentException("Pagination in audit query is null");
+            throw new IllegalArgumentException("Pagination in audit query is null");
         }
         if (query.getAuditSearchCriteria() == null) {
-            throw new InputArgumentException("No search criterias in audit list query");
+            throw new IllegalArgumentException("No search criterias in audit list query");
         }
 
         try {
@@ -69,11 +63,11 @@ public class AuditDomainModelBean implements AuditDomainModel {
             String sql = SearchFieldMapper.createSelectSearchSql(searchKeyValues, true);
             String countSql = SearchFieldMapper.createCountSearchSql(searchKeyValues, true);
 
-            Long numberMatches = dao.getAuditListSearchCount(countSql, searchKeyValues);
+            Long numberMatches = auditDao.getAuditListSearchCount(countSql, searchKeyValues);
 
-            List<AuditLog> movementEntityList = dao.getAuditListPaginated(page, listSize, sql, searchKeyValues);
+            List<AuditLog> movementEntityList = auditDao.getAuditListPaginated(page, listSize, sql, searchKeyValues);
             for (AuditLog entity : movementEntityList) {
-                auditList.add(mapper.toModel(entity));
+                auditList.add(AuditLogMapper.toModel(entity));
             }
 
             int numberOfPages = (int) (numberMatches / listSize);
@@ -85,22 +79,16 @@ public class AuditDomainModelBean implements AuditDomainModel {
             response.setCurrentPage(query.getPagination().getPage());
             response.setAuditLogList(auditList);
             return response;
-        } catch (AuditDaoMappingException | AuditDaoException | ParseException ex) {
+        } catch ( ParseException ex) {
             LOG.error("[ Error when getting movement by query :{}] {} ", query, ex.getMessage());
-            throw new AuditModelException(ex.getMessage(), ex);
+            throw new RuntimeException(ex.getMessage(), ex);
         }
     }
 
-    @Override
-    public AuditLogType createAuditLog(AuditLogType auditLogType) throws AuditModelException, InputArgumentException {
-        try {
-            AuditLog auditLog = mapper.toEntity(auditLogType);
-            auditLog = dao.createAuditLogEntity(auditLog);
-            return mapper.toModel(auditLog);
-        } catch (AuditDaoException | AuditDaoMappingException e) {
-            LOG.error("[ Error when creating audit log:{} ] {}", auditLogType, e.getMessage());
-            throw new AuditModelException("Could not create audit log.", e);
-        }
+    public AuditLogType createAuditLog(AuditLogType auditLogType) {
+        AuditLog auditLog = AuditLogMapper.toEntity(auditLogType);
+        auditLog = auditDao.createAuditLogEntity(auditLog);
+        return AuditLogMapper.toModel(auditLog);
     }
 
 }

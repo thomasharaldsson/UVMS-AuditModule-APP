@@ -11,52 +11,37 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.service.bean;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.ec.fisheries.schema.audit.search.v1.AuditLogListQuery;
 import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogResponse;
 import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
-import eu.europa.ec.fisheries.uvms.audit.AuditDomainModel;
+import eu.europa.ec.fisheries.uvms.audit.bean.AuditDomainModelBean;
 import eu.europa.ec.fisheries.uvms.audit.dto.ListResponseDto;
-import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelException;
-import eu.europa.ec.fisheries.uvms.audit.model.exception.InputArgumentException;
-import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
-import eu.europa.ec.fisheries.uvms.audit.service.AuditService;
-import eu.europa.ec.fisheries.uvms.audit.service.exception.AuditServiceException;
+import eu.europa.ec.fisheries.uvms.audit.mapper.AuditLogMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 @Stateless
-public class AuditServiceBean implements AuditService {
+public class AuditServiceBean {
 
     final static Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class);
 
-    @EJB
-    private AuditDomainModel model;
+    @Inject
+    private AuditDomainModelBean model;
 
     /**
      * {@inheritDoc}
      *
      * @param query
      * @return GetAuditLogListByQueryResponse
-     * @throws AuditServiceException
      */
-    @Override
-    public GetAuditLogListByQueryResponse getList(AuditLogListQuery query) throws AuditServiceException {
-        try {
-            ListResponseDto auditLogs = model.getAuditListByQuery(query);
-            if (auditLogs == null) {
-                LOG.error("[ Error when getting list, response from JMS Queue is null ]");
-                throw new AuditServiceException("[ Error when getting list, response from JMS Queue is null ]");
-            }
-            return AuditLogMapper.mapAuditListResponseToAuditLogListByQuery(auditLogs);
-        } catch (AuditModelException | InputArgumentException e) {
-            LOG.error("[ Error when getting audit list by query {}] {}",query, e.getMessage());
-            throw new AuditServiceException("[ Error when getting audit list by query ]", e);
-        }
+    public GetAuditLogListByQueryResponse getList(AuditLogListQuery query) {
+        ListResponseDto auditLogs = model.getAuditListByQuery(query);
+        return AuditLogMapper.mapAuditListResponseToAuditLogListByQuery(auditLogs);
 
     }
 
@@ -65,21 +50,10 @@ public class AuditServiceBean implements AuditService {
      *
      * @param auditLogType
      * @return CreateAuditLogResponse
-     * @throws AuditServiceException
      */
-    @Override
-    public CreateAuditLogResponse createAuditLog(AuditLogType auditLogType) throws AuditServiceException {
-        try {
+    public CreateAuditLogResponse createAuditLog(AuditLogType auditLogType) {
             AuditLogType auditLog = model.createAuditLog(auditLogType);
-            if (auditLog == null) {
-                LOG.error("[ Error when creating audit log, response from JMS Queue is null ]");
-                throw new AuditServiceException("[ Error when creating audit log, response from JMS Queue is null ]");      //eh what?
-            }
             return AuditLogMapper.mapAuditLogTypeToAuditLogResponse(auditLog);
-        } catch (AuditModelException | InputArgumentException e) {
-            LOG.error("[ Error when creating audit log ] {}", e.getMessage());
-            throw new AuditServiceException("[ Error when creating audit log ]", e);
-        }
 
     }
 

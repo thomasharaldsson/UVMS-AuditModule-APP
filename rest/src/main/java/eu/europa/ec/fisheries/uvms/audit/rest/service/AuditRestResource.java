@@ -11,23 +11,22 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.rest.service;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import eu.europa.ec.fisheries.uvms.audit.service.bean.AuditServiceBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.fisheries.schema.audit.search.v1.AuditLogListQuery;
 import eu.europa.ec.fisheries.uvms.audit.rest.dto.ResponseCode;
 import eu.europa.ec.fisheries.uvms.audit.rest.dto.ResponseDto;
-import eu.europa.ec.fisheries.uvms.audit.service.AuditService;
 import eu.europa.ec.fisheries.uvms.audit.service.dto.AuditListResponseDto;
-import eu.europa.ec.fisheries.uvms.audit.service.exception.AuditServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.RequiresFeature;
 import eu.europa.ec.fisheries.uvms.rest.security.UnionVMSFeature;
 
@@ -37,8 +36,8 @@ public class AuditRestResource {
 
     final static Logger LOG = LoggerFactory.getLogger(AuditRestResource.class);
 
-    @EJB
-    AuditService serviceLayer;
+    @Inject
+    AuditServiceBean serviceLayer;
 
     /**
      *
@@ -57,7 +56,7 @@ public class AuditRestResource {
         LOG.info("Get list invoked in rest layer:{}",query);
         try {
             return new ResponseDto(serviceLayer.getList(query), ResponseCode.OK);
-        } catch (AuditServiceException | NullPointerException ex) {
+        } catch (Exception ex) {
             LOG.error("[ Error when getting list. {}] {}",query, ex);
             return new ResponseDto(ex.getMessage(), ResponseCode.ERROR);
         }
