@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.jms.TextMessage;
 import java.math.BigInteger;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -55,7 +55,7 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
         audit.setOperation("Test Operation");
         audit.setUsername("Test User");
         audit.setObjectType("Test Object Type");
-        audit.setTimestamp(DateUtil.getXMLGregorianCalendarInUTC(new Date()));
+        audit.setTimestamp(DateUtil.parseUTCDateToString(Instant.now()));
         request.setAuditLog(audit);
 
         String xml = JAXBMarshaller.marshallJaxBObjectToString(request);
@@ -66,7 +66,7 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
         query.setPagination(getBasicPagination());
         ListCriteria criteria = new ListCriteria();
         criteria.setKey(SearchKey.FROM_DATE);
-        criteria.setValue(DateUtil.parseUTCDateToString(audit.getTimestamp().toGregorianCalendar().getTime()));
+        criteria.setValue(audit.getTimestamp());
         query.getAuditSearchCriteria().add(criteria);
         GetAuditLogListByQueryResponse response = auditServiceBean.getList(query);
 
@@ -90,7 +90,7 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
         audit.setOperation("Test Operation");
         audit.setUsername("Test User" + UUID.randomUUID().getLeastSignificantBits());
         audit.setObjectType("Test Object Type");
-        audit.setTimestamp(DateUtil.getXMLGregorianCalendarInUTC(new Date()));
+        audit.setTimestamp(DateUtil.parseUTCDateToString(Instant.now()));
         request.setAuditLog(audit);
 
         String xml = JAXBMarshaller.marshallJaxBObjectToString(request);

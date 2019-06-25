@@ -11,24 +11,14 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.entity.component;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
+import java.time.Instant;
 
 
 @Entity
@@ -59,8 +49,7 @@ public class AuditLog implements Serializable {
     private String objectType;
 
     @Column(name = "audit_timestamp")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp;
+    private Instant timestamp;
 
     @Size(max = 500)
     @Column(name = "audit_affectedobject")
@@ -69,8 +58,7 @@ public class AuditLog implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "audit_updattim")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updated;
+    private Instant updated;
 
     @Basic(optional = false)
     @NotNull
@@ -89,7 +77,7 @@ public class AuditLog implements Serializable {
             setUpdatedBy("UNKNOWN");
         }
         if (updated == null){
-            setUpdated(new Date());
+            setUpdated(Instant.now());
         }
     }
     
@@ -100,7 +88,7 @@ public class AuditLog implements Serializable {
         this.id = moveId;
     }
 
-    public AuditLog(Long id, Date updated, String updatedBy) {
+    public AuditLog(Long id, Instant updated, String updatedBy) {
         this.id = id;
         this.updated = updated;
         this.updatedBy = updatedBy;
@@ -138,11 +126,11 @@ public class AuditLog implements Serializable {
         this.objectType = objectType;
     }
 
-    public Date getTimestamp() {
+    public Instant getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -154,11 +142,11 @@ public class AuditLog implements Serializable {
         this.affectedObject = affectedObject;
     }
 
-    public Date getUpdated() {
+    public Instant getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
+    public void setUpdated(Instant updated) {
         this.updated = updated;
     }
 

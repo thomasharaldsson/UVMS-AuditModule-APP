@@ -19,16 +19,14 @@ import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
 import eu.europa.ec.fisheries.uvms.audit.mapper.AuditLogMapper;
 import eu.europa.ec.fisheries.uvms.audit.mapper.search.SearchFieldMapper;
 import eu.europa.ec.fisheries.uvms.audit.mapper.search.SearchValue;
-
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 @Stateless
 public class AuditDomainModelBean {
@@ -51,38 +49,33 @@ public class AuditDomainModelBean {
             throw new IllegalArgumentException("No search criterias in audit list query");
         }
 
-        try {
-            ListResponseDto response = new ListResponseDto();
-            List<AuditLogType> auditList = new ArrayList<>();
+        ListResponseDto response = new ListResponseDto();
+        List<AuditLogType> auditList = new ArrayList<>();
 
-            Integer page = query.getPagination().getPage().intValue();
-            Integer listSize = query.getPagination().getListSize().intValue();
+        Integer page = query.getPagination().getPage().intValue();
+        Integer listSize = query.getPagination().getListSize().intValue();
 
-            List<SearchValue> searchKeyValues = SearchFieldMapper.mapSearchField(query.getAuditSearchCriteria());
+        List<SearchValue> searchKeyValues = SearchFieldMapper.mapSearchField(query.getAuditSearchCriteria());
 
-            String sql = SearchFieldMapper.createSelectSearchSql(searchKeyValues, true);
-            String countSql = SearchFieldMapper.createCountSearchSql(searchKeyValues, true);
+        String sql = SearchFieldMapper.createSelectSearchSql(searchKeyValues, true);
+        String countSql = SearchFieldMapper.createCountSearchSql(searchKeyValues, true);
 
-            Long numberMatches = auditDao.getAuditListSearchCount(countSql, searchKeyValues);
+        Long numberMatches = auditDao.getAuditListSearchCount(countSql, searchKeyValues);
 
-            List<AuditLog> movementEntityList = auditDao.getAuditListPaginated(page, listSize, sql, searchKeyValues);
-            for (AuditLog entity : movementEntityList) {
-                auditList.add(AuditLogMapper.toModel(entity));
-            }
-
-            int numberOfPages = (int) (numberMatches / listSize);
-            if (numberMatches % listSize != 0) {
-                numberOfPages += 1;
-            }
-
-            response.setTotalNumberOfPages(new BigInteger("" + numberOfPages));
-            response.setCurrentPage(query.getPagination().getPage());
-            response.setAuditLogList(auditList);
-            return response;
-        } catch ( ParseException ex) {
-            LOG.error("[ Error when getting movement by query :{}] {} ", query, ex.getMessage());
-            throw new RuntimeException(ex.getMessage(), ex);
+        List<AuditLog> movementEntityList = auditDao.getAuditListPaginated(page, listSize, sql, searchKeyValues);
+        for (AuditLog entity : movementEntityList) {
+            auditList.add(AuditLogMapper.toModel(entity));
         }
+
+        int numberOfPages = (int) (numberMatches / listSize);
+        if (numberMatches % listSize != 0) {
+            numberOfPages += 1;
+        }
+
+        response.setTotalNumberOfPages(new BigInteger("" + numberOfPages));
+        response.setCurrentPage(query.getPagination().getPage());
+        response.setAuditLogList(auditList);
+        return response;
     }
 
     public AuditLogType createAuditLog(AuditLogType auditLogType) {

@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.uvms.audit.mapper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +44,7 @@ public class MapperTest {
         assertSame(entity.getObjectType(), result.getObjectType());
         assertSame(entity.getOperation(), result.getOperation());
         assertSame(entity.getUsername(), result.getUsername());
-        assertEquals(entity.getTimestamp(), result.getTimestamp());
+        assertEquals(DateUtil.parseUTCDateToString(entity.getTimestamp()), result.getTimestamp());
     }
 
     @Test
