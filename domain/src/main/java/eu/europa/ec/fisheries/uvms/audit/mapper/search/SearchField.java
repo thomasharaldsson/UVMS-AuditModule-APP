@@ -11,7 +11,8 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.mapper.search;
 
-import java.util.Date;
+
+import java.time.Instant;
 
 public enum SearchField {
 
@@ -19,8 +20,8 @@ public enum SearchField {
     USER("username", "USER", SearchTables.AUDIT, String.class),
     OPERATION("operation", "OPERATION", SearchTables.AUDIT, String.class),
     TYPE("objectType", "TYPE", SearchTables.AUDIT, String.class),
-    TO_DATE("timestamp", "TIMESTAMP", SearchTables.AUDIT, Date.class),
-    FROM_DATE("timestamp", "TIMESTAMP", SearchTables.AUDIT, Date.class);
+    TO_DATE("timestamp", "TIMESTAMP", SearchTables.AUDIT, Instant.class),
+    FROM_DATE("timestamp", "TIMESTAMP", SearchTables.AUDIT, Instant.class);
     // @formatter:on
 
     private final String fieldName;

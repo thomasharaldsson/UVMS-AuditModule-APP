@@ -11,13 +11,10 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
+
+import java.time.Instant;
 
 public class MockData {
     private static final String DATE_TIME_PATTERN= "yyyy-MM-dd HH:mm:ss.SSS";
@@ -32,7 +29,7 @@ public class MockData {
     }
 
     public static AuditLog getEntity(long id) {
-        Date timestamp = createDate();
+        Instant timestamp = Instant.now();
         AuditLog entity = new AuditLog();
         entity.setId(id);
         entity.setUsername("Username");
@@ -43,18 +40,6 @@ public class MockData {
         entity.setUpdated(timestamp);
         entity.setUpdatedBy("UpdatedBy");
         return entity;
-    }
-
-    private static Date createDate(){
-        Date currentDate = null;
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_PATTERN);
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        try {
-            currentDate = sdf.parse(new Date().toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return currentDate;
     }
 
 }

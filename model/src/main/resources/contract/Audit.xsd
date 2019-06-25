@@ -10,7 +10,7 @@
             <xsd:element name="username" type="xsd:string"/>
             <xsd:element name="operation" type="xsd:string"/>
             <xsd:element name="objectType" type="xsd:string"/>
-            <xsd:element name="timestamp" type="xsd:dateTime"/>
+            <xsd:element name="timestamp" type="xsd:string"/>
             <xsd:element name="affectedObject" type="xsd:string"/>
             <xsd:element name="comment" type="xsd:string"/>
         </xsd:sequence>

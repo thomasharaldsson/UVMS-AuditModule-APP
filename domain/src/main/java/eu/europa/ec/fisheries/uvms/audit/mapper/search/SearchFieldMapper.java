@@ -15,9 +15,9 @@ import eu.europa.ec.fisheries.schema.audit.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.audit.search.v1.SearchKey;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -36,7 +36,7 @@ public class SearchFieldMapper {
      * @return
      * @throws ParseException
      */
-    public static String createSelectSearchSql(List<SearchValue> searchFields, boolean isDynamic) throws ParseException {
+    public static String createSelectSearchSql(List<SearchValue> searchFields, boolean isDynamic) {
         StringBuilder selectBuffer = new StringBuilder();
         selectBuffer.append("SELECT ").append(SearchTables.AUDIT.getTableAlias()).append(" FROM ").append(SearchTables.AUDIT.getTableName())
                 .append(" ").append(SearchTables.AUDIT.getTableAlias()).append(" ");
@@ -57,7 +57,7 @@ public class SearchFieldMapper {
      * @return
      * @throws ParseException
      */
-    public static String createCountSearchSql(List<SearchValue> searchFields, boolean isDynamic) throws ParseException {
+    public static String createCountSearchSql(List<SearchValue> searchFields, boolean isDynamic) {
         StringBuilder countBuffer = new StringBuilder();
         countBuffer.append("SELECT COUNT(").append(SearchTables.AUDIT.getTableAlias()).append(") FROM ").append(SearchTables.AUDIT.getTableName())
                 .append(" ").append(SearchTables.AUDIT.getTableAlias()).append(" ");
@@ -77,7 +77,7 @@ public class SearchFieldMapper {
      * @return
      * @throws ParseException
      */
-    private static String createSearchSql(List<SearchValue> criterias, boolean dynamic) throws ParseException {
+    private static String createSearchSql(List<SearchValue> criterias, boolean dynamic) {
         String OPERATOR = " OR ";
         if (dynamic) {
             OPERATOR = " AND ";
@@ -115,9 +115,9 @@ public class SearchFieldMapper {
      * @return
      * @throws ParseException
      */
-    private static String setValueAsType(SearchValue entry) throws ParseException {
+    private static String setValueAsType(SearchValue entry) {
         StringBuilder builder = new StringBuilder();
-        if (entry.getField().getClazz().isAssignableFrom(Date.class)) {
+        if (entry.getField().getClazz().isAssignableFrom(Instant.class)) {
             switch (entry.getField()) {
                 case FROM_DATE:
                     builder.append(" >= ").append(":fromDate ");
@@ -247,7 +247,6 @@ public class SearchFieldMapper {
      *
      * @param key
      * @return
-     * @throws AuditSearchMapperException
      */
     private static SearchField mapCriteria(SearchKey key) {
         switch (key) {

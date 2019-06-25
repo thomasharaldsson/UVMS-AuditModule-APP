@@ -11,98 +11,30 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.util;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DateUtil {
 
     final static org.slf4j.Logger LOG = LoggerFactory.getLogger(DateUtil.class);
 
     final static String FORMAT = "yyyy-MM-dd HH:mm:ss Z";
-    private static final String DATE_TIME_SQL_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-    private static final String DATE_TIME_JAVA_FORMAT= "EE MMM dd HH:mm:ss zz yyyy";
 
-    public static java.sql.Timestamp getDateFromString(String inDate) throws ParseException {
-        Date date = parseToUTCDate(inDate);
-        return new java.sql.Timestamp(date.getTime());
+    public static Instant parseToUTCDate(String dateString) throws IllegalArgumentException {
+        if (dateString != null) {
+
+            return ZonedDateTime.parse(dateString, java.time.format.DateTimeFormatter.ofPattern(FORMAT)).toInstant();
+        } else
+            return null;
     }
 
-    public static Date parseToUTCDate(String dateString) throws IllegalArgumentException {
-        try {
-            if (dateString != null) {
-                DateTimeFormatter formatter = DateTimeFormat.forPattern(FORMAT).withOffsetParsed();
-                DateTime dateTime = formatter.withZoneUTC().parseDateTime(dateString);
-                GregorianCalendar cal = dateTime.toGregorianCalendar();
-                return cal.getTime();
-            } else
-                return null;
-        } catch (IllegalArgumentException e) {
-            LOG.error(e.getMessage());
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public static String parseUTCDateToString(Date date) {
-        String dateString = null;
+    public static String parseUTCDateToString(Instant date) {
         if (date != null) {
-            DateFormat df = new SimpleDateFormat(FORMAT);
-            dateString = df.format(date);
-        }
-        return dateString;
-    }
-
-    public static Date parseTimestamp(XMLGregorianCalendar timestamp) {
-        if (timestamp != null) {
-            return timestamp.toGregorianCalendar().getTime();
-        }
-        return null;
-    }
-
-    public static XMLGregorianCalendar parseTimestamp(Date timestamp) {
-        GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(timestamp);
-        XMLGregorianCalendar xmlCalendar = null;
-        try {
-            xmlCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-        } catch (DatatypeConfigurationException ignored) {
-        }
-        return xmlCalendar;
-    }
-
-    public static XMLGregorianCalendar getXMLGregorianCalendarInUTC(Date dateTimeInUTC){
-        if (dateTimeInUTC != null) {
-            GregorianCalendar calendar = (GregorianCalendar) GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
-            SimpleDateFormat sdf = null;
-            if (dateTimeInUTC instanceof Timestamp){
-                sdf = new SimpleDateFormat(DATE_TIME_SQL_FORMAT);
-            }else {
-                sdf = new SimpleDateFormat(DATE_TIME_JAVA_FORMAT, Locale.US);
-            }
-            try {
-                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                Date theDate = sdf.parse(dateTimeInUTC.toString());
-                calendar.setTime(theDate);
-                return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
-            } catch (DatatypeConfigurationException e) {
-                LOG.error("[ Error when getting XML Gregorian calendar. ] ", e);
-            } catch (ParseException e) {
-                LOG.error("Could not parse dateTimeInUTC: "+dateTimeInUTC.toString());
-            }
+            return date.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern(FORMAT));
         }
         return null;
     }

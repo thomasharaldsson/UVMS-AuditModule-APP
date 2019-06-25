@@ -11,17 +11,14 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.mapper;
 
-import eu.europa.ec.fisheries.schema.audit.source.v1.AuditDataSourceMethod;
-import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogRequest;
 import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogResponse;
 import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.dto.ListResponseDto;
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
-import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import java.util.Date;
+
+import java.time.Instant;
 
 
 public class AuditLogMapper {
@@ -32,14 +29,14 @@ public class AuditLogMapper {
         model.setAffectedObject(auditlog.getAffectedObject());
         model.setOperation(auditlog.getOperation());
         model.setObjectType(auditlog.getObjectType());
-        model.setTimestamp(DateUtil.getXMLGregorianCalendarInUTC(auditlog.getTimestamp()));
+        model.setTimestamp(DateUtil.parseUTCDateToString(auditlog.getTimestamp()));
         model.setUsername(auditlog.getUsername());
         model.setComment(auditlog.getComment());
         return model;
     }
 
     public static AuditLog toEntity(AuditLogType auditLogType) {
-        Date nowDateUTC = DateUtils.getNowDateUTC();
+        Instant nowDateUTC = Instant.now();
         AuditLog auditlog = new AuditLog();
         auditlog.setUsername(auditLogType.getUsername());
         auditlog.setOperation(auditLogType.getOperation());
@@ -52,26 +49,6 @@ public class AuditLogMapper {
         return auditlog;
     }
 
-    public static String mapToAuditLog(String objectType, String operation, String affectedObject, String username) {
-        return mapToAuditLog(objectType, operation, affectedObject, null, username);
-    }
-
-    public static String mapToAuditLog(String objectType, String operation, String affectedObject, String comment, String username) {
-        CreateAuditLogRequest createAuditLogRequest = new CreateAuditLogRequest();
-
-        AuditLogType auditLogType = new AuditLogType();
-        auditLogType.setAffectedObject(affectedObject);
-        auditLogType.setObjectType(objectType);
-        auditLogType.setOperation(operation);
-        auditLogType.setUsername(username);
-        auditLogType.setComment(comment);
-
-        createAuditLogRequest.setAuditLog(auditLogType);
-        createAuditLogRequest.setMethod(AuditDataSourceMethod.CREATE);
-
-        String auditData = JAXBMarshaller.marshallJaxBObjectToString(createAuditLogRequest);
-        return auditData;
-    }
 
     public static GetAuditLogListByQueryResponse mapAuditListResponseToAuditLogListByQuery(ListResponseDto responseDto) {
         GetAuditLogListByQueryResponse response = new GetAuditLogListByQueryResponse();
