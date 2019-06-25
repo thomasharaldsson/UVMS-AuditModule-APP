@@ -9,7 +9,7 @@
  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
  copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.europa.ec.fisheries.uvms.audit.service.Message.bean;
+package eu.europa.ec.fisheries.uvms.audit.service.message;
 
 import eu.europa.ec.fisheries.schema.audit.source.v1.*;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;

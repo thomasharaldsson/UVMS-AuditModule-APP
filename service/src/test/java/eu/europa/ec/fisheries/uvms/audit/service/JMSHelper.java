@@ -30,7 +30,7 @@ public class JMSHelper {
     /*public PingResponse pingMovement() throws Exception {
         String pingRequest = MovementModuleRequestMapper.mapToPingRequest(null);
         String correlationId = sendMovementMessage(pingRequest, null, null);
-        Message response = listenForResponse(correlationId);
+        message response = listenForResponse(correlationId);
         return JAXBMarshaller.unmarshallTextMessage((TextMessage) response, PingResponse.class);
     }*/
 
