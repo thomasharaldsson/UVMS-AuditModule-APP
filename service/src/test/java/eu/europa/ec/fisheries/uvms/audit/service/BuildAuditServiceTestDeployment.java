@@ -24,7 +24,7 @@ public abstract class BuildAuditServiceTestDeployment {
                 .importRuntimeAndTestDependencies().resolve().withTransitivity().asFile();
         testWar.addAsLibraries(files);
 
-        
+
         testWar.addPackages(true, "eu.europa.ec.fisheries.uvms.audit.service");
 
 
