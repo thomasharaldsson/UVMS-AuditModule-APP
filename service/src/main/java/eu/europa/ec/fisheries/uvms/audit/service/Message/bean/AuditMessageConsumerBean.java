@@ -48,11 +48,12 @@ public class AuditMessageConsumerBean implements MessageListener {
         LOG.debug("Received MessageRecievedEvent:{}", message);
         TextMessage requestMessage = (TextMessage) message;
         try {
-            AuditDataSourceMethod method = AuditDataSourceMethod.fromValue(requestMessage.getStringProperty(MessageConstants.JMS_FUNCTION_PROPERTY));
-            if(method == null){
+            String methodString = requestMessage.getStringProperty(MessageConstants.JMS_FUNCTION_PROPERTY);
+            if(methodString == null){
                 AuditBaseRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, AuditBaseRequest.class);
-                method = baseRequest.getMethod();
+                methodString = baseRequest.getMethod().toString();
             }
+            AuditDataSourceMethod method = AuditDataSourceMethod.fromValue(methodString);
             switch (method) {
                 case CREATE:
                     CreateAuditLogRequest auditLogRequest = JAXBMarshaller.unmarshallTextMessage(requestMessage, CreateAuditLogRequest.class);

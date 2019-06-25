@@ -18,11 +18,13 @@ import org.junit.runner.RunWith;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.jms.ConnectionFactory;
+import javax.jms.TextMessage;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(Arquillian.class)
@@ -56,7 +58,7 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
         request.setAuditLog(audit);
 
         String xml = JAXBMarshaller.marshallJaxBObjectToString(request);
-        jmsHelper.sendAuditMessage(xml);
+        jmsHelper.sendAuditMessage(xml, AuditDataSourceMethod.CREATE.value());
         Thread.sleep(500);
 
         AuditLogListQuery query = new AuditLogListQuery();
@@ -74,6 +76,46 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
         assertEquals(audit.getUsername(), log.getUsername());
         assertEquals(audit.getObjectType(), log.getObjectType());
         assertEquals(audit.getOperation(), log.getOperation());
+    }
+
+    @Test
+    public void createAuditLogAndGetByUser() throws Exception{
+        CreateAuditLogRequest request = new CreateAuditLogRequest();
+        request.setMethod(AuditDataSourceMethod.CREATE);
+
+        AuditLogType audit = new AuditLogType();
+        audit.setAffectedObject(UUID.randomUUID().toString());
+        audit.setComment("Test Comment");
+        audit.setOperation("Test Operation");
+        audit.setUsername("Test User" + UUID.randomUUID().getLeastSignificantBits());
+        audit.setObjectType("Test Object Type");
+        audit.setTimestamp(DateUtil.getXMLGregorianCalendarInUTC(new Date()));
+        request.setAuditLog(audit);
+
+        String xml = JAXBMarshaller.marshallJaxBObjectToString(request);
+        jmsHelper.sendAuditMessage(xml, AuditDataSourceMethod.CREATE.value());
+        Thread.sleep(500);
+
+        AuditLogListQuery query = new AuditLogListQuery();
+        query.setPagination(getBasicPagination());
+        ListCriteria criteria = new ListCriteria();
+        criteria.setKey(SearchKey.USER);
+        criteria.setValue(audit.getUsername());
+        query.getAuditSearchCriteria().add(criteria);
+        GetAuditLogListByQueryResponse response = auditServiceBean.getList(query);
+
+        assertEquals(1, response.getAuditLog().size());
+        AuditLogType log = response.getAuditLog().get(0);
+        assertEquals(audit.getAffectedObject(), log.getAffectedObject());
+    }
+
+    @Test
+    public void ping() throws Exception{
+        String corrID = jmsHelper.sendAuditMessage("", AuditDataSourceMethod.PING.value());
+
+        TextMessage returnMessage = (TextMessage) jmsHelper.listenForResponse(corrID);
+
+        assertTrue(returnMessage.getText().contains("pong"));
     }
 
     private static ListPagination getBasicPagination(){

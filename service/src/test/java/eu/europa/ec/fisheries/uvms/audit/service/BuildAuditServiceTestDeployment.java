@@ -32,7 +32,6 @@ public abstract class BuildAuditServiceTestDeployment {
 
 
         testWar.addAsWebInfResource("ejb-jar.xml");
-        testWar.addAsResource("persistence-integration.xml", "META-INF/persistence.xml");
         testWar.addAsResource("beans.xml", "META-INF/beans.xml");
 
 		return testWar;
