@@ -17,6 +17,9 @@
     <properties>
     	<audit.api.check.against.version>4.0.10</audit.api.check.against.version>
     	<docker.dev.version>3.37.1.w17</docker.dev.version>
+        <docker.liquibase.changeLogFile>LIQUIBASE/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
+        <docker.liquibase.db.user>audit</docker.liquibase.db.user>
+        <docker.liquibase.db.passwd>audit</docker.liquibase.db.passwd>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mockito.version>1.9.5</mockito.version>
         <junit.version>4.12</junit.version>
