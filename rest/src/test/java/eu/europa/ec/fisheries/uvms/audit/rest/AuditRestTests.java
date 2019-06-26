@@ -59,18 +59,11 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         CreateAuditLogRequest request = new CreateAuditLogRequest();
         request.setMethod(AuditDataSourceMethod.CREATE);
 
-        AuditLogType audit = new AuditLogType();
-        audit.setAffectedObject(UUID.randomUUID().toString());
-        audit.setComment("Test Comment");
-        audit.setOperation("Test Operation");
-        audit.setUsername("Test User");
-        audit.setObjectType("Test Object Type");
-        audit.setTimestamp(DateUtil.parseUTCDateToString(Instant.now()));
+        AuditLogType audit = getBasicAuditLog();
         request.setAuditLog(audit);
 
         String xml = JAXBMarshaller.marshallJaxBObjectToString(request);
         jmsHelper.sendAuditMessage(xml, AuditDataSourceMethod.CREATE.value());
-        System.out.println("Now");
         Thread.sleep(500);
 
         AuditLogListQuery query = new AuditLogListQuery();
@@ -84,6 +77,78 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         assertEquals(1, response.getAuditLog().size());
         checkEquals(audit, response.getAuditLog().get(0));
 
+    }
+
+    @Test
+    public void getAuditLogByRestQueryByOperation() throws Exception{
+        CreateAuditLogRequest request = new CreateAuditLogRequest();
+        request.setMethod(AuditDataSourceMethod.CREATE);
+
+        AuditLogType audit = getBasicAuditLog();
+        audit.setOperation(audit.getOperation() + UUID.fromString(audit.getAffectedObject()).getLeastSignificantBits());
+        request.setAuditLog(audit);
+
+        String xml = JAXBMarshaller.marshallJaxBObjectToString(request);
+        jmsHelper.sendAuditMessage(xml, AuditDataSourceMethod.CREATE.value());
+        Thread.sleep(500);
+
+        AuditLogListQuery query = new AuditLogListQuery();
+        query.setPagination(getBasicPagination());
+        ListCriteria criteria = new ListCriteria();
+        criteria.setKey(SearchKey.OPERATION);
+        criteria.setValue(audit.getOperation());
+        query.getAuditSearchCriteria().add(criteria);
+
+        GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
+        assertEquals(1, response.getAuditLog().size());
+        checkEquals(audit, response.getAuditLog().get(0));
+
+    }
+
+    @Test
+    public void getSeveralAuditLogByRestQueryByUserAndTimestamp() throws Exception{
+        CreateAuditLogRequest request = new CreateAuditLogRequest();
+        request.setMethod(AuditDataSourceMethod.CREATE);
+
+        Instant timestamp = Instant.now();
+        String username = "";
+
+        for(int i  = 0; i < 10; i++ ) {
+            AuditLogType audit = getBasicAuditLog();
+            username = audit.getUsername();
+            request.setAuditLog(audit);
+
+            String xml = JAXBMarshaller.marshallJaxBObjectToString(request);
+            jmsHelper.sendAuditMessage(xml, AuditDataSourceMethod.CREATE.value());
+        }
+        Thread.sleep(500);
+
+        AuditLogListQuery query = new AuditLogListQuery();
+        query.setPagination(getBasicPagination());
+        ListCriteria criteria = new ListCriteria();
+        criteria.setKey(SearchKey.USER);
+        criteria.setValue(username);
+        query.getAuditSearchCriteria().add(criteria);
+
+        criteria = new ListCriteria();
+        criteria.setKey(SearchKey.FROM_DATE);
+        criteria.setValue(DateUtil.parseUTCDateToString(timestamp));
+        query.getAuditSearchCriteria().add(criteria);
+
+        GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
+        assertEquals(10, response.getAuditLog().size());
+
+    }
+
+    private static AuditLogType getBasicAuditLog(){
+        AuditLogType audit = new AuditLogType();
+        audit.setAffectedObject(UUID.randomUUID().toString());
+        audit.setComment("Test Comment");
+        audit.setOperation("Test Operation");
+        audit.setUsername("Test User");
+        audit.setObjectType("Test Object Type");
+        audit.setTimestamp(DateUtil.parseUTCDateToString(Instant.now()));
+        return audit;
     }
 
     private static ListPagination getBasicPagination(){
