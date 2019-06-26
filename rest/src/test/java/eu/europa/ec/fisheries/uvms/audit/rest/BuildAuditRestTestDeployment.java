@@ -39,6 +39,9 @@ public abstract class BuildAuditRestTestDeployment {
                 .importRuntimeAndTestDependencies().resolve().withTransitivity().asFile();
         testWar.addAsLibraries(files);
 
+        testWar.addAsLibraries(Maven.configureResolver().loadPomFromFile("pom.xml")
+                .resolve("eu.europa.ec.fisheries.uvms.audit:audit-service")
+                .withTransitivity().asFile());
 
         testWar.addPackages(true, "eu.europa.ec.fisheries.uvms.audit.rest");
 
