@@ -19,13 +19,13 @@
             <column name="audit_type" type="varchar(60)" remarks=".">
                 <constraints nullable="false"/>
             </column>
-            <column name="audit_timestamp" type="timestamp" remarks="Time of the log.">
+            <column name="audit_timestamp" type="timestamp with time zone" remarks="Time of the log.">
                 <constraints nullable="false"/>
             </column>
             <column name="audit_affectedobject" type="varchar(500)" remarks="Reference id to the object the log is connected to.">
                 <constraints nullable="true"/>
             </column>
-            <column name="audit_updattim" type="timestamp" remarks="Last updated date time.">
+            <column name="audit_updattim" type="timestamp with time zone" remarks="Last updated date time.">
                 <constraints nullable="false"/>
             </column>
             <column name="audit_upuser" type="varchar(60)" remarks="Last update userid.">
