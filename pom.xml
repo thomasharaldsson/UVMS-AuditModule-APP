@@ -27,7 +27,7 @@
         <javaee.version>7.0</javaee.version>
         <maven.plugin.version>3.4</maven.plugin.version>
         <usm4uvms.version>4.0.19</usm4uvms.version>
-        <uvms.common.version>4.0.0</uvms.common.version>
+        <uvms.common.version>4.0.2</uvms.common.version>
         <uvms.config.version>4.0.4</uvms.config.version>
         <uvms.config.artifactId>uvms-config</uvms.config.artifactId>
 
