@@ -4,13 +4,13 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
         <artifactId>audit</artifactId>
-        <version>4.1.3-SNAPSHOT</version>
+        <version>4.1.3</version>
     </parent>
   
   
     <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
     <artifactId>liquibase</artifactId>
-    <version>4.1.3-SNAPSHOT</version>
+    <version>4.1.3</version>
     <name>liquibase</name>
 
     <properties>
