@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.audit.rest;
 import eu.europa.ec.fisheries.schema.config.types.v1.PullSettingsStatus;
 import eu.europa.ec.fisheries.schema.config.types.v1.SettingType;
 import eu.europa.ec.fisheries.uvms.audit.service.message.AuditConfigMessageProducerBean;
-import eu.europa.ec.fisheries.uvms.config.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.config.model.mapper.ModuleResponseMapper;
 
 import javax.ejb.ActivationConfigProperty;
@@ -43,7 +42,7 @@ public class ConfigServiceMock implements MessageListener {
             mockSetting.setDescription("Set in ConfigServiceMock.java");
             String response = ModuleResponseMapper.toPullSettingsResponse(Arrays.asList(mockSetting), PullSettingsStatus.OK);
             messageProducer.sendResponseMessageToSender((TextMessage) message, response);
-        } catch (ModelMarshallException | JMSException e) {
+        } catch (JMSException e) {
         }
     }
 }
