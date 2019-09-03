@@ -35,9 +35,9 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
     private ConnectionFactory connectionFactory;
 
     @Inject
-    AuditServiceBean auditServiceBean;
+    private AuditServiceBean auditServiceBean;
 
-    JMSHelper jmsHelper;
+    private JMSHelper jmsHelper;
 
     @Before
     public void cleanJMS() {
