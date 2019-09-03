@@ -11,6 +11,7 @@ import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.audit.service.bean.AuditServiceBean;
 import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
+import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +46,7 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
     }
 
     @Test
+    @OperateOnDeployment("auditservice")
     public void createAuditLog() throws Exception{
         CreateAuditLogRequest request = new CreateAuditLogRequest();
         request.setMethod(AuditDataSourceMethod.CREATE);
@@ -80,6 +82,7 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
     }
 
     @Test
+    @OperateOnDeployment("auditservice")
     public void createAuditLogAndGetByUser() throws Exception{
         CreateAuditLogRequest request = new CreateAuditLogRequest();
         request.setMethod(AuditDataSourceMethod.CREATE);
