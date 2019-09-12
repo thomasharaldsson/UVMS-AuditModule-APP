@@ -11,6 +11,7 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.util;
 
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
@@ -22,19 +23,19 @@ public class DateUtil {
 
     final static org.slf4j.Logger LOG = LoggerFactory.getLogger(DateUtil.class);
 
-    final static String FORMAT = "yyyy-MM-dd HH:mm:ss Z";
+    final static String FORMAT = "yyyy-MM-dd HH:mm:ss X";
 
     public static Instant parseToUTCDate(String dateString) throws IllegalArgumentException {
         if (dateString != null) {
 
-            return ZonedDateTime.parse(dateString, java.time.format.DateTimeFormatter.ofPattern(FORMAT)).toInstant();
+            return DateUtils.convertDateTimeInUTC(dateString);
         } else
             return null;
     }
 
     public static String parseUTCDateToString(Instant date) {
         if (date != null) {
-            return date.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern(FORMAT));
+            return DateUtils.dateToString(date);
         }
         return null;
     }
