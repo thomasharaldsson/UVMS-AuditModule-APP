@@ -12,6 +12,7 @@
     <artifactId>liquibase</artifactId>
     <version>4.1.5-SNAPSHOT</version>
     <name>liquibase</name>
+    <packaging>pom</packaging>
 
     <properties>
         <project.scm.id>github</project.scm.id>
