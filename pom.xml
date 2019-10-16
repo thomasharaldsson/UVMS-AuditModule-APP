@@ -26,7 +26,6 @@
     <uvms.common.version>3.4-SNAPSHOT</uvms.common.version>
     <uvms.config.version>4.2-SNAPSHOT</uvms.config.version>
     <uvms.config.artifactId>config-library</uvms.config.artifactId>
-
     <javaee.version>8.0</javaee.version>
     <hibernate.version>5.1.9.Final</hibernate.version>
 
