@@ -39,7 +39,7 @@
       <id>weblogic</id>
       <properties>
         <uvms.config.artifactId>config-library_WebLogic-2.1.3_</uvms.config.artifactId>
-        <uvms.config.version>${uvms.config.module.version}</uvms.config.version>
+        <uvms.config.version>${uvms.config.library.version}</uvms.config.version>
         <release.branch.name>uvms-3.0.5-C3PO</release.branch.name>
       </properties>
     </profile>
