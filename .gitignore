@@ -4,3 +4,4 @@ logging.properties
 *.iml
 **/.idea
 rest/src/main/webapp/apidocs/
+.flattened-pom.xml
