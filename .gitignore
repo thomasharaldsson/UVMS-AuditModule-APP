@@ -5,3 +5,9 @@ logging.properties
 **/.idea
 rest/src/main/webapp/apidocs/
 .flattened-pom.xml
+.project
+.settings/
+.classpath
+
+
+pom.xml.versionsBackup
