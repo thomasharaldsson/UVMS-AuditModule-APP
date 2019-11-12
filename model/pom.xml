@@ -23,12 +23,16 @@
 			<artifactId>uvms-pom-test-deps</artifactId>
 			<type>pom</type>
 			<scope>test</scope>
-			<version>1.24</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-lang3</artifactId>
 		    <version>3.9</version>
+		</dependency>
+		<dependency>
+			<groupId>fish.focus.uvms.maven</groupId>
+			<artifactId>uvms-pom-java11-deps</artifactId>
+			<type>pom</type>
 		</dependency>
 	</dependencies>
 
@@ -71,7 +75,7 @@
 			<plugin>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
-				<version>3.1.13</version>
+				<version>3.3.4</version>
 				<executions>
 					<execution>
 						<id>generate-vessel-module</id>
