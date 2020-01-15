@@ -11,19 +11,18 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
-import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
+import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
+import eu.europa.ec.fisheries.uvms.audit.MockData;
+import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
-import eu.europa.ec.fisheries.uvms.audit.MockData;
-import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MapperTest {
@@ -44,7 +43,7 @@ public class MapperTest {
         assertSame(entity.getObjectType(), result.getObjectType());
         assertSame(entity.getOperation(), result.getOperation());
         assertSame(entity.getUsername(), result.getUsername());
-        assertEquals(DateUtil.parseUTCDateToString(entity.getTimestamp()), result.getTimestamp());
+        assertEquals(DateUtils.dateToHumanReadableString(entity.getTimestamp()), result.getTimestamp());
     }
 
     @Test
