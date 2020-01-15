@@ -16,7 +16,7 @@ import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryRespo
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.dto.ListResponseDto;
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
-import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 
 import java.time.Instant;
 
@@ -29,7 +29,7 @@ public class AuditLogMapper {
         model.setAffectedObject(auditlog.getAffectedObject());
         model.setOperation(auditlog.getOperation());
         model.setObjectType(auditlog.getObjectType());
-        model.setTimestamp(DateUtil.parseUTCDateToString(auditlog.getTimestamp()));
+        model.setTimestamp(DateUtils.dateToHumanReadableString(auditlog.getTimestamp()));
         model.setUsername(auditlog.getUsername());
         model.setComment(auditlog.getComment());
         return model;

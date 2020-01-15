@@ -10,7 +10,7 @@ import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogRequest;
 import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.ws.rs.client.Entity;
@@ -28,7 +27,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.StringReader;
 import java.math.BigInteger;
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -40,7 +38,7 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    JMSHelper jmsHelper;
+    private JMSHelper jmsHelper;
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -76,7 +74,6 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
         assertEquals(1, response.getAuditLog().size());
         checkEquals(audit, response.getAuditLog().get(0));
-
     }
 
     @Test
@@ -102,7 +99,6 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
         assertEquals(1, response.getAuditLog().size());
         checkEquals(audit, response.getAuditLog().get(0));
-
     }
 
     @Test
@@ -132,12 +128,11 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
 
         criteria = new ListCriteria();
         criteria.setKey(SearchKey.FROM_DATE);
-        criteria.setValue(DateUtil.parseUTCDateToString(timestamp));
+        criteria.setValue(DateUtils.dateToHumanReadableString(timestamp));
         query.getAuditSearchCriteria().add(criteria);
 
         GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
         assertEquals(10, response.getAuditLog().size());
-
     }
 
     private static AuditLogType getBasicAuditLog(){
@@ -147,7 +142,7 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         audit.setOperation("Test Operation");
         audit.setUsername("Test User");
         audit.setObjectType("Test Object Type");
-        audit.setTimestamp(DateUtil.parseUTCDateToString(Instant.now()));
+        audit.setTimestamp(DateUtils.dateToHumanReadableString(Instant.now()));
         return audit;
     }
 
@@ -169,7 +164,6 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         return readResponseDto(response, GetAuditLogListByQueryResponse.class);
     }
 
-
     static <T> T readResponseDto(String response, Class<T> clazz) throws Exception {
         JsonReader jsonReader = Json.createReader(new StringReader(response));
         JsonObject responseDto = jsonReader.readObject();
@@ -178,7 +172,6 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
     }
 
     public void checkEquals(AuditLogType original, AuditLogType copy){
-
         assertEquals(original.getAffectedObject(), copy.getAffectedObject());
         assertEquals(original.getUsername(), copy.getUsername());
         assertEquals(original.getComment(), copy.getComment());

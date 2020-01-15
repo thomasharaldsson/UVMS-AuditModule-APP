@@ -17,16 +17,15 @@
     <properties>
         <installAtEnd>false</installAtEnd>
 
-        <docker.dev.version>3.40.3.w18</docker.dev.version>
+        <docker.dev.version>3.40.18.w18</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>audit</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>audit</docker.liquibase.db.passwd>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.plugin.version>3.4</maven.plugin.version>
         <usm4uvms.version>4.0.23</usm4uvms.version>
-        <uvms.common.version>4.0.5</uvms.common.version>
+        <uvms.common.version>4.0.13</uvms.common.version>
         <uvms.config.version>4.0.5</uvms.config.version>
-        <fish.focus.parent.version>2.4</fish.focus.parent.version>
+        <fish.focus.parent.version>2.6</fish.focus.parent.version>
         <uvms.config.artifactId>uvms-config</uvms.config.artifactId>
 
         <project.scm.id>github</project.scm.id>
@@ -154,7 +153,6 @@
         <tag>HEAD</tag>
     </scm>
 
-
     <modules>
     	<module>model</module>
         <module>LIQUIBASE</module>
@@ -163,4 +161,5 @@
         <module>rest</module>
         <module>module</module>
     </modules>
+
 </project>

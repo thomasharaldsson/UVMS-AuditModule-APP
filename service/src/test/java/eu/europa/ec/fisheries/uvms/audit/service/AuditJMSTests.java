@@ -10,7 +10,7 @@ import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryRespo
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.audit.service.bean.AuditServiceBean;
-import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
@@ -57,7 +57,7 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
         audit.setOperation("Test Operation");
         audit.setUsername("Test User");
         audit.setObjectType("Test Object Type");
-        audit.setTimestamp(DateUtil.parseUTCDateToString(Instant.now()));
+        audit.setTimestamp(DateUtils.dateToHumanReadableString(Instant.now()));
         request.setAuditLog(audit);
 
         String xml = JAXBMarshaller.marshallJaxBObjectToString(request);
@@ -93,7 +93,7 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
         audit.setOperation("Test Operation");
         audit.setUsername("Test User" + UUID.randomUUID().getLeastSignificantBits());
         audit.setObjectType("Test Object Type");
-        audit.setTimestamp(DateUtil.parseUTCDateToString(Instant.now()));
+        audit.setTimestamp(DateUtils.dateToHumanReadableString(Instant.now()));
         request.setAuditLog(audit);
 
         String xml = JAXBMarshaller.marshallJaxBObjectToString(request);

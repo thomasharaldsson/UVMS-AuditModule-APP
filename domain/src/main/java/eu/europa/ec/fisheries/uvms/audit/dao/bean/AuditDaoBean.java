@@ -12,14 +12,14 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package eu.europa.ec.fisheries.uvms.audit.dao.bean;
 
 import eu.europa.ec.fisheries.uvms.audit.entity.component.AuditLog;
-import eu.europa.ec.fisheries.uvms.audit.mapper.search.SearchValue;
-import eu.europa.ec.fisheries.uvms.audit.util.DateUtil;
+import eu.europa.ec.fisheries.uvms.audit.mapper.search.SearchValue;;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,16 +34,9 @@ public class AuditDaoBean {
     public Long getAuditListSearchCount(String countSql, List<SearchValue> searchKeyValues)  {
         LOG.debug("SQL QUERY IN LIST COUNTNG: " + countSql);
         TypedQuery<Long> query = em.createQuery(countSql, Long.class);
-        for (SearchValue searchValue : searchKeyValues) {
-            switch (searchValue.getField()) {
-            case FROM_DATE:
-                query.setParameter("fromDate", DateUtil.parseToUTCDate(searchValue.getValue()));
-                break;
-            case TO_DATE:
-                query.setParameter("toDate", DateUtil.parseToUTCDate(searchValue.getValue()));
-                break;
-            }
-        }
+
+        setQueryParameters(searchKeyValues, query);
+
         return query.getSingleResult();
     }
 
@@ -51,19 +44,24 @@ public class AuditDaoBean {
         LOG.debug("SQL QUERY IN LIST PAGINATED: " + sql);
         TypedQuery<AuditLog> query = em.createQuery(sql, AuditLog.class);
 
-        for (SearchValue searchValue : searchKeyValues) {
-            switch (searchValue.getField()) {
-            case FROM_DATE:
-                query.setParameter("fromDate", DateUtil.parseToUTCDate(searchValue.getValue()));
-                break;
-            case TO_DATE:
-                query.setParameter("toDate", DateUtil.parseToUTCDate(searchValue.getValue()));
-                break;
-            }
-        }
+        setQueryParameters(searchKeyValues, query);
+
         query.setFirstResult(listSize * (page - 1));
         query.setMaxResults(listSize);
         return query.getResultList();
+    }
+
+    private <T> void setQueryParameters(List<SearchValue> searchKeyValues, TypedQuery<T> query) {
+        for (SearchValue searchValue : searchKeyValues) {
+            switch (searchValue.getField()) {
+            case FROM_DATE:
+                query.setParameter("fromDate", DateUtils.stringToDate(searchValue.getValue()));
+                break;
+            case TO_DATE:
+                query.setParameter("toDate", DateUtils.stringToDate(searchValue.getValue()));
+                break;
+            }
+        }
     }
 
     public AuditLog createAuditLogEntity(AuditLog auditLog) {
