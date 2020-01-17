@@ -64,6 +64,11 @@
             <artifactId>uvms-commons-message</artifactId>
         	<version>${uvms.commons.version}</version>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-rest</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
