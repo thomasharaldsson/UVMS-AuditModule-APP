@@ -67,7 +67,7 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-rest</artifactId>
-            <scope>provided</scope>
+            <version>${uvms.commons.version}</version>
         </dependency>
     </dependencies>
 
