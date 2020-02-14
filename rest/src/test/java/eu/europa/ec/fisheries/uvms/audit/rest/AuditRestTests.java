@@ -6,11 +6,10 @@ import eu.europa.ec.fisheries.schema.audit.search.v1.ListPagination;
 import eu.europa.ec.fisheries.schema.audit.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.audit.source.v1.AuditDataSourceMethod;
 import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogRequest;
+import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
-import eu.europa.ec.fisheries.uvms.audit.rest.dto.TestGetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import eu.europa.ec.fisheries.uvms.commons.date.JsonBConfigurator;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,20 +17,14 @@ import org.junit.runner.RunWith;
 
 import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.bind.Jsonb;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import java.io.StringReader;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class AuditRestTests extends BuildAuditRestTestDeployment {
@@ -41,20 +34,13 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
 
     private JMSHelper jmsHelper;
 
-    private static Jsonb jsonb = new JsonBConfigurator().getContext(null);
-
     @Before
     public void cleanJMS() {
         jmsHelper = new JMSHelper(connectionFactory);
     }
 
     @Test
-    public void worldsBestAndMostUsefulRestTest(){
-        assertTrue(true);
-    }
-
-    @Test
-    public void getAuditLogByRestQuery() throws Exception{
+    public void getAuditLogByRestQuery() throws Exception {
         CreateAuditLogRequest request = new CreateAuditLogRequest();
         request.setMethod(AuditDataSourceMethod.CREATE);
 
@@ -72,13 +58,13 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         criteria.setValue(audit.getTimestamp());
         query.getAuditSearchCriteria().add(criteria);
 
-        TestGetAuditLogListByQueryResponse response = getAuditListByQuery(query);
+        GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
         assertEquals(1, response.getAuditLog().size());
         checkEquals(audit, response.getAuditLog().get(0));
     }
 
     @Test
-    public void getAuditLogByRestQueryByOperation() throws Exception{
+    public void getAuditLogByRestQueryByOperation() throws Exception {
         CreateAuditLogRequest request = new CreateAuditLogRequest();
         request.setMethod(AuditDataSourceMethod.CREATE);
 
@@ -97,20 +83,20 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         criteria.setValue(audit.getOperation());
         query.getAuditSearchCriteria().add(criteria);
 
-        TestGetAuditLogListByQueryResponse response = getAuditListByQuery(query);
+        GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
         assertEquals(1, response.getAuditLog().size());
         checkEquals(audit, response.getAuditLog().get(0));
     }
 
     @Test
-    public void getSeveralAuditLogByRestQueryByUserAndTimestamp() throws Exception{
+    public void getSeveralAuditLogByRestQueryByUserAndTimestamp() throws Exception {
         CreateAuditLogRequest request = new CreateAuditLogRequest();
         request.setMethod(AuditDataSourceMethod.CREATE);
 
         Instant timestamp = Instant.now();
         String username = "";
 
-        for(int i  = 0; i < 10; i++ ) {
+        for (int i = 0; i < 10; i++) {
             AuditLogType audit = getBasicAuditLog();
             username = audit.getUsername();
             request.setAuditLog(audit);
@@ -132,11 +118,11 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         criteria.setValue(DateUtils.dateToEpochMilliseconds(timestamp));
         query.getAuditSearchCriteria().add(criteria);
 
-        TestGetAuditLogListByQueryResponse response = getAuditListByQuery(query);
+        GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
         assertEquals(10, response.getAuditLog().size());
     }
 
-    private static AuditLogType getBasicAuditLog(){
+    private static AuditLogType getBasicAuditLog() {
         AuditLogType audit = new AuditLogType();
         audit.setAffectedObject(UUID.randomUUID().toString());
         audit.setComment("Test Comment");
@@ -147,32 +133,23 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         return audit;
     }
 
-    private static ListPagination getBasicPagination(){
+    private static ListPagination getBasicPagination() {
         ListPagination pagination = new ListPagination();
         pagination.setPage(BigInteger.valueOf(1));
         pagination.setListSize(BigInteger.valueOf(100));
         return pagination;
     }
 
-    private TestGetAuditLogListByQueryResponse getAuditListByQuery(AuditLogListQuery query) {
-        String response = getWebTarget()
+    private GetAuditLogListByQueryResponse getAuditListByQuery(AuditLogListQuery query) {
+        return getWebTarget()
                 .path("audit")
                 .path("list")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, getToken())
-                .post(Entity.json(query), String.class);
-
-        return readResponseDto(response, TestGetAuditLogListByQueryResponse.class);
+                .post(Entity.json(query), GetAuditLogListByQueryResponse.class);
     }
 
-    static <T> T readResponseDto(String response, Class<T> clazz) {
-        JsonReader jsonReader = Json.createReader(new StringReader(response));
-        JsonObject responseDto = jsonReader.readObject();
-        JsonObject data = responseDto.getJsonObject("data");
-        return jsonb.fromJson(data.toString(), clazz);
-    }
-
-    public void checkEquals(AuditLogType original, AuditLogType copy){
+    public void checkEquals(AuditLogType original, AuditLogType copy) {
         assertEquals(original.getAffectedObject(), copy.getAffectedObject());
         assertEquals(original.getUsername(), copy.getUsername());
         assertEquals(original.getComment(), copy.getComment());
