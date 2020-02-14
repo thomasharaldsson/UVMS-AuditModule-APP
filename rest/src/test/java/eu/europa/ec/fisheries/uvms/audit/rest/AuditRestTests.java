@@ -1,16 +1,16 @@
 package eu.europa.ec.fisheries.uvms.audit.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.schema.audit.search.v1.AuditLogListQuery;
 import eu.europa.ec.fisheries.schema.audit.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.audit.search.v1.ListPagination;
 import eu.europa.ec.fisheries.schema.audit.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.audit.source.v1.AuditDataSourceMethod;
 import eu.europa.ec.fisheries.schema.audit.source.v1.CreateAuditLogRequest;
-import eu.europa.ec.fisheries.schema.audit.source.v1.GetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.schema.audit.v1.AuditLogType;
+import eu.europa.ec.fisheries.uvms.audit.rest.dto.TestGetAuditLogListByQueryResponse;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.date.JsonBConfigurator;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +21,7 @@ import javax.jms.ConnectionFactory;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.bind.Jsonb;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -40,7 +41,7 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
 
     private JMSHelper jmsHelper;
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static Jsonb jsonb = new JsonBConfigurator().getContext(null);
 
     @Before
     public void cleanJMS() {
@@ -71,7 +72,7 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         criteria.setValue(audit.getTimestamp());
         query.getAuditSearchCriteria().add(criteria);
 
-        GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
+        TestGetAuditLogListByQueryResponse response = getAuditListByQuery(query);
         assertEquals(1, response.getAuditLog().size());
         checkEquals(audit, response.getAuditLog().get(0));
     }
@@ -96,7 +97,7 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         criteria.setValue(audit.getOperation());
         query.getAuditSearchCriteria().add(criteria);
 
-        GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
+        TestGetAuditLogListByQueryResponse response = getAuditListByQuery(query);
         assertEquals(1, response.getAuditLog().size());
         checkEquals(audit, response.getAuditLog().get(0));
     }
@@ -128,10 +129,10 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
 
         criteria = new ListCriteria();
         criteria.setKey(SearchKey.FROM_DATE);
-        criteria.setValue(DateUtils.dateToHumanReadableString(timestamp));
+        criteria.setValue(DateUtils.dateToEpochMilliseconds(timestamp));
         query.getAuditSearchCriteria().add(criteria);
 
-        GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
+        TestGetAuditLogListByQueryResponse response = getAuditListByQuery(query);
         assertEquals(10, response.getAuditLog().size());
     }
 
@@ -142,7 +143,7 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         audit.setOperation("Test Operation");
         audit.setUsername("Test User");
         audit.setObjectType("Test Object Type");
-        audit.setTimestamp(DateUtils.dateToHumanReadableString(Instant.now()));
+        audit.setTimestamp(DateUtils.dateToEpochMilliseconds(Instant.now()));
         return audit;
     }
 
@@ -153,7 +154,7 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
         return pagination;
     }
 
-    private GetAuditLogListByQueryResponse getAuditListByQuery(AuditLogListQuery query) throws Exception {
+    private TestGetAuditLogListByQueryResponse getAuditListByQuery(AuditLogListQuery query) {
         String response = getWebTarget()
                 .path("audit")
                 .path("list")
@@ -161,14 +162,14 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
                 .header(HttpHeaders.AUTHORIZATION, getToken())
                 .post(Entity.json(query), String.class);
 
-        return readResponseDto(response, GetAuditLogListByQueryResponse.class);
+        return readResponseDto(response, TestGetAuditLogListByQueryResponse.class);
     }
 
-    static <T> T readResponseDto(String response, Class<T> clazz) throws Exception {
+    static <T> T readResponseDto(String response, Class<T> clazz) {
         JsonReader jsonReader = Json.createReader(new StringReader(response));
         JsonObject responseDto = jsonReader.readObject();
         JsonObject data = responseDto.getJsonObject("data");
-        return objectMapper.readValue(data.toString(), clazz);
+        return jsonb.fromJson(data.toString(), clazz);
     }
 
     public void checkEquals(AuditLogType original, AuditLogType copy){

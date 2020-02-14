@@ -57,7 +57,7 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
         audit.setOperation("Test Operation");
         audit.setUsername("Test User");
         audit.setObjectType("Test Object Type");
-        audit.setTimestamp(DateUtils.dateToHumanReadableString(Instant.now()));
+        audit.setTimestamp(DateUtils.dateToEpochMilliseconds(Instant.now()));
         request.setAuditLog(audit);
 
         String xml = JAXBMarshaller.marshallJaxBObjectToString(request);
@@ -93,7 +93,7 @@ public class AuditJMSTests extends BuildAuditServiceTestDeployment {
         audit.setOperation("Test Operation");
         audit.setUsername("Test User" + UUID.randomUUID().getLeastSignificantBits());
         audit.setObjectType("Test Object Type");
-        audit.setTimestamp(DateUtils.dateToHumanReadableString(Instant.now()));
+        audit.setTimestamp(DateUtils.dateToEpochMilliseconds(Instant.now()));
         request.setAuditLog(audit);
 
         String xml = JAXBMarshaller.marshallJaxBObjectToString(request);

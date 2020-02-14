@@ -43,7 +43,7 @@ public class MapperTest {
         assertSame(entity.getObjectType(), result.getObjectType());
         assertSame(entity.getOperation(), result.getOperation());
         assertSame(entity.getUsername(), result.getUsername());
-        assertEquals(DateUtils.dateToHumanReadableString(entity.getTimestamp()), result.getTimestamp());
+        assertEquals(DateUtils.dateToEpochMilliseconds(entity.getTimestamp()), result.getTimestamp());
     }
 
     @Test
