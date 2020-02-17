@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import eu.europa.ec.fisheries.uvms.commons.date.JsonBConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,7 @@ public class RestActivator extends Application {
     public RestActivator() {
         set.add(AuditRestResource.class);
         set.add(UnionVMSFeatureFilter.class);
+        set.add(JsonBConfigurator.class);
         LOG.info(RestConstants.MODULE_NAME + " module starting up");
     }
 

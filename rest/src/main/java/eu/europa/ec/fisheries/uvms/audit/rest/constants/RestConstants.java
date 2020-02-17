@@ -11,10 +11,7 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.audit.rest.constants;
 
-/**
- **/
 public class RestConstants {
-
     public static final String REST_URL = "/rest";
     public static final String MODULE_NAME = "Audit";
 

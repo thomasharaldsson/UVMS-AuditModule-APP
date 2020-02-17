@@ -29,7 +29,7 @@ public class AuditLogMapper {
         model.setAffectedObject(auditlog.getAffectedObject());
         model.setOperation(auditlog.getOperation());
         model.setObjectType(auditlog.getObjectType());
-        model.setTimestamp(DateUtils.dateToHumanReadableString(auditlog.getTimestamp()));
+        model.setTimestamp(DateUtils.dateToEpochMilliseconds(auditlog.getTimestamp()));
         model.setUsername(auditlog.getUsername());
         model.setComment(auditlog.getComment());
         return model;

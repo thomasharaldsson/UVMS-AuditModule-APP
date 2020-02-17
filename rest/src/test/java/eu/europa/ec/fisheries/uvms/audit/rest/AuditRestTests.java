@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.audit.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.schema.audit.search.v1.AuditLogListQuery;
 import eu.europa.ec.fisheries.schema.audit.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.audit.search.v1.ListPagination;
@@ -18,19 +17,14 @@ import org.junit.runner.RunWith;
 
 import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import java.io.StringReader;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class AuditRestTests extends BuildAuditRestTestDeployment {
@@ -40,20 +34,13 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
 
     private JMSHelper jmsHelper;
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
-
     @Before
     public void cleanJMS() {
         jmsHelper = new JMSHelper(connectionFactory);
     }
 
     @Test
-    public void worldsBestAndMostUsefulRestTest(){
-        assertTrue(true);
-    }
-
-    @Test
-    public void getAuditLogByRestQuery() throws Exception{
+    public void getAuditLogByRestQuery() throws Exception {
         CreateAuditLogRequest request = new CreateAuditLogRequest();
         request.setMethod(AuditDataSourceMethod.CREATE);
 
@@ -77,7 +64,7 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
     }
 
     @Test
-    public void getAuditLogByRestQueryByOperation() throws Exception{
+    public void getAuditLogByRestQueryByOperation() throws Exception {
         CreateAuditLogRequest request = new CreateAuditLogRequest();
         request.setMethod(AuditDataSourceMethod.CREATE);
 
@@ -102,14 +89,14 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
     }
 
     @Test
-    public void getSeveralAuditLogByRestQueryByUserAndTimestamp() throws Exception{
+    public void getSeveralAuditLogByRestQueryByUserAndTimestamp() throws Exception {
         CreateAuditLogRequest request = new CreateAuditLogRequest();
         request.setMethod(AuditDataSourceMethod.CREATE);
 
         Instant timestamp = Instant.now();
         String username = "";
 
-        for(int i  = 0; i < 10; i++ ) {
+        for (int i = 0; i < 10; i++) {
             AuditLogType audit = getBasicAuditLog();
             username = audit.getUsername();
             request.setAuditLog(audit);
@@ -128,50 +115,41 @@ public class AuditRestTests extends BuildAuditRestTestDeployment {
 
         criteria = new ListCriteria();
         criteria.setKey(SearchKey.FROM_DATE);
-        criteria.setValue(DateUtils.dateToHumanReadableString(timestamp));
+        criteria.setValue(DateUtils.dateToEpochMilliseconds(timestamp));
         query.getAuditSearchCriteria().add(criteria);
 
         GetAuditLogListByQueryResponse response = getAuditListByQuery(query);
         assertEquals(10, response.getAuditLog().size());
     }
 
-    private static AuditLogType getBasicAuditLog(){
+    private static AuditLogType getBasicAuditLog() {
         AuditLogType audit = new AuditLogType();
         audit.setAffectedObject(UUID.randomUUID().toString());
         audit.setComment("Test Comment");
         audit.setOperation("Test Operation");
         audit.setUsername("Test User");
         audit.setObjectType("Test Object Type");
-        audit.setTimestamp(DateUtils.dateToHumanReadableString(Instant.now()));
+        audit.setTimestamp(DateUtils.dateToEpochMilliseconds(Instant.now()));
         return audit;
     }
 
-    private static ListPagination getBasicPagination(){
+    private static ListPagination getBasicPagination() {
         ListPagination pagination = new ListPagination();
         pagination.setPage(BigInteger.valueOf(1));
         pagination.setListSize(BigInteger.valueOf(100));
         return pagination;
     }
 
-    private GetAuditLogListByQueryResponse getAuditListByQuery(AuditLogListQuery query) throws Exception {
-        String response = getWebTarget()
+    private GetAuditLogListByQueryResponse getAuditListByQuery(AuditLogListQuery query) {
+        return getWebTarget()
                 .path("audit")
                 .path("list")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, getToken())
-                .post(Entity.json(query), String.class);
-
-        return readResponseDto(response, GetAuditLogListByQueryResponse.class);
+                .post(Entity.json(query), GetAuditLogListByQueryResponse.class);
     }
 
-    static <T> T readResponseDto(String response, Class<T> clazz) throws Exception {
-        JsonReader jsonReader = Json.createReader(new StringReader(response));
-        JsonObject responseDto = jsonReader.readObject();
-        JsonObject data = responseDto.getJsonObject("data");
-        return objectMapper.readValue(data.toString(), clazz);
-    }
-
-    public void checkEquals(AuditLogType original, AuditLogType copy){
+    public void checkEquals(AuditLogType original, AuditLogType copy) {
         assertEquals(original.getAffectedObject(), copy.getAffectedObject());
         assertEquals(original.getUsername(), copy.getUsername());
         assertEquals(original.getComment(), copy.getComment());
