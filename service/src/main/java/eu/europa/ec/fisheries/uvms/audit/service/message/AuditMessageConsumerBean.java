@@ -29,7 +29,7 @@ import javax.jms.TextMessage;
 
 @MessageDriven(activationConfig = {
     @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_TYPE_STR, propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
-    @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = MessageConstants.QUEUE_AUDIT_EVENT)
+    @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_LOOKUP_STR, propertyValue = MessageConstants.QUEUE_AUDIT_EVENT)
 })
 public class AuditMessageConsumerBean implements MessageListener {
 
