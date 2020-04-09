@@ -23,7 +23,7 @@
         <docker.liquibase.db.passwd>audit</docker.liquibase.db.passwd>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <usm4uvms.version>4.1.0</usm4uvms.version>
-        <uvms.common.version>4.1.6</uvms.common.version>
+        <uvms.common.version>4.1.7</uvms.common.version>
         <uvms.config.version>4.1.1</uvms.config.version>
         <fish.focus.parent.version>3.2</fish.focus.parent.version>
         <uvms.config.artifactId>uvms-config</uvms.config.artifactId>
