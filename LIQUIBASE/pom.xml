@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <liquibase-maven-plugin>3.10.0</liquibase-maven-plugin>
+        <liquibase-maven-plugin>3.10.1</liquibase-maven-plugin>
     </properties>
 
     <profiles>
