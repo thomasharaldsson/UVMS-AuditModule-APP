@@ -25,7 +25,7 @@
         <usm4uvms.version>4.1.1</usm4uvms.version>
         <uvms.common.version>4.1.7</uvms.common.version>
         <uvms.config.version>4.1.2</uvms.config.version>
-        <fish.focus.parent.version>3.2</fish.focus.parent.version>
+        <fish.focus.parent.version>3.3</fish.focus.parent.version>
         <uvms.config.artifactId>uvms-config</uvms.config.artifactId>
 
         <project.scm.id>github</project.scm.id>
