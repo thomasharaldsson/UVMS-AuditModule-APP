@@ -49,8 +49,7 @@ public class AuditConfigMessageProducerBean extends AbstractProducer implements 
             }
             return corrId;
         } catch (Exception e) {
-            LOG.error("[ Error when sending message. ] {0}", e.getMessage());
-            throw new AuditMessageException("[ Error when sending message. ]", e);
+            throw new AuditMessageException("Error when sending message.", e);
         }
     }
 
@@ -60,8 +59,7 @@ public class AuditConfigMessageProducerBean extends AbstractProducer implements 
             LOG.info("[INFO] Sending message back to recipient on queue {}", requestMessage.getJMSReplyTo());
             sendResponseMessageToSender(requestMessage, returnMessage);
         } catch (Exception e) {
-            LOG.error("[ Error when sending message. ] {}", e.getMessage());
-            throw new AuditMessageException("[ Error when sending message. ]", e);
+            throw new AuditMessageException("Error when sending message.", e);
         }
     }
 
@@ -71,8 +69,7 @@ public class AuditConfigMessageProducerBean extends AbstractProducer implements 
         try {
             return sendDataSourceMessage(text, DataSourceQueue.CONFIG);
         } catch (AuditMessageException e) {
-            LOG.error("[ Error when sending config message. ] {}", e.getMessage());
-            throw new ConfigMessageException("[ Error when sending config message. ]");
+            throw new ConfigMessageException("Error when sending config message.",e);
         }
     }
 

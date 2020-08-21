@@ -54,8 +54,7 @@ public class AuditServiceBean implements AuditService {
             }
             return AuditLogMapper.mapAuditListResponseToAuditLogListByQuery(auditLogs);
         } catch (AuditModelException | InputArgumentException e) {
-            LOG.error("[ Error when getting audit list by query {}] {}",query, e.getMessage());
-            throw new AuditServiceException("[ Error when getting audit list by query ]", e);
+            throw new AuditServiceException("Error when getting audit list by query ", e);
         }
 
     }
@@ -77,8 +76,7 @@ public class AuditServiceBean implements AuditService {
             }
             return AuditLogMapper.mapAuditLogTypeToAuditLogResponse(auditLog);
         } catch (AuditModelException | InputArgumentException e) {
-            LOG.error("[ Error when creating audit log ] {}", e.getMessage());
-            throw new AuditServiceException("[ Error when creating audit log ]", e);
+            throw new AuditServiceException("Error when creating audit log", e);
         }
 
     }

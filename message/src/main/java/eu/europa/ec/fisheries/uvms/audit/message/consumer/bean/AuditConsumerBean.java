@@ -35,8 +35,7 @@ public class AuditConsumerBean extends AbstractConsumer implements ConfigMessage
         try {
             return getMessage(correlationId, type);
         } catch (MessageException e) {
-            LOG.error("[ Error when getting config message. ] {}", e.getMessage());
-            throw new ConfigMessageException("[ Error when getting config message. ]");
+            throw new ConfigMessageException("Error when getting config message.",e);
         }
     }
 

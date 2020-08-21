@@ -58,7 +58,7 @@ public class AuditRestResource {
         try {
             return new ResponseDto(serviceLayer.getList(query), ResponseCode.OK);
         } catch (AuditServiceException | NullPointerException ex) {
-            LOG.error("[ Error when getting list. {}] {}",query, ex);
+            LOG.error("Error when getting list. " + query, ex);
             return new ResponseDto(ex.getMessage(), ResponseCode.ERROR);
         }
     }

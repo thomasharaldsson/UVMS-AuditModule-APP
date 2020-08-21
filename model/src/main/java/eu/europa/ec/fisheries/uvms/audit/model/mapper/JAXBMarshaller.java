@@ -61,8 +61,7 @@ public class JAXBMarshaller {
             LOG.debug("StringWriter time: {}", (System.currentTimeMillis() - before));
             return marshalled;
         } catch (JAXBException ex) {
-            LOG.error("[ Error when marshalling object to string ] {} ", ex.getMessage());
-            throw new AuditModelMarshallException("[ Error when marshalling Object to String ]", ex);
+            throw new AuditModelMarshallException("Error when marshalling Object to String", ex);
         }
     }
 
@@ -95,8 +94,7 @@ public class JAXBMarshaller {
             LOG.debug("Unmarshalling time: {}", (System.currentTimeMillis() - before));
             return object;
         } catch (JMSException | JAXBException ex) {
-            LOG.error("[ Error when Text message to object ] {} ", ex.getMessage());
-            throw new AuditModelMarshallException("[Error when unmarshalling response in ResponseMapper ]", ex);
+            throw new AuditModelMarshallException("Error when unmarshalling response in ResponseMapper", ex);
         }
     }
 
