@@ -30,7 +30,7 @@ public class AuditConfigHelper implements ConfigHelper {
     @Inject
     private PropertiesBean propertiesBean;
 
-	@PersistenceContext
+	@PersistenceContext(unitName = "auditPU")
     protected EntityManager em;
 
     private static final String MODULE_NAME = "audit";

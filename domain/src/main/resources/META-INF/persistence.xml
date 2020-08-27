@@ -3,9 +3,11 @@
              xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence">
     <persistence-unit name="auditPU" transaction-type="JTA">
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>jdbc/uvms_audit</jta-data-source>
+        <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <shared-cache-mode>ALL</shared-cache-mode>
         <properties>
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.generate_statistics" value="true"/>
@@ -13,6 +15,5 @@
             <property name="hibernate.physical_naming_strategy" value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
             <property name="hibernate.implicit_naming_strategy" value="org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl"/>
         </properties>
-        <shared-cache-mode>ALL</shared-cache-mode>
     </persistence-unit>
 </persistence>
