@@ -130,7 +130,11 @@ public class SearchFieldMapper {
                     break;
             }
         } else {
-            builder.append(" = ").append(buildValueFromClassType(entry));
+            if (entry.getField() == SearchField.OPERATION) {
+                builder.append(" = ").append(buildValueFromClassType(entry).toUpperCase());
+            } else {
+                builder.append(" = ").append(buildValueFromClassType(entry));
+            }
         }
 
         return builder.toString();
@@ -145,6 +149,9 @@ public class SearchFieldMapper {
      * @return
      */
     private static String buildTableAliasname(SearchField field) {
+        if (field == SearchField.OPERATION) {
+            return "UPPER(" + field.getSearchTables().getTableAlias() + '.' + field.getFieldName() + ')';
+        }
         StringBuilder builder = new StringBuilder();
         builder.append(field.getSearchTables().getTableAlias()).append(".").append(field.getFieldName());
         return builder.toString();
