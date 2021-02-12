@@ -29,12 +29,12 @@
 	</profiles>
 
 	<dependencies>
-		<dependency>
-			<groupId>fish.focus.uvms.maven</groupId>
-			<artifactId>uvms-pom-gis-deps</artifactId>
-			<type>pom</type>
-			<scope>provided</scope>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>fish.focus.uvms.maven</groupId>-->
+			<!--<artifactId>uvms-pom-gis-deps</artifactId>-->
+			<!--<type>pom</type>-->
+			<!--<scope>provided</scope>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>fish.focus.uvms.maven</groupId>
 			<artifactId>uvms-pom-arquillian-deps</artifactId>
