@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>audit-module</artifactId>
@@ -23,37 +24,49 @@
                 <configuration>
                     <modules>
                         <ejbModule>
-                            <groupId>${project.groupId}</groupId>
+                            <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
                             <artifactId>audit-dbaccess-domain</artifactId>
-                            <bundleFileName>audit-dbaccess-domain.jar</bundleFileName>
                         </ejbModule>
                         <ejbModule>
-                            <groupId>${project.groupId}</groupId>
+                            <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
                             <artifactId>audit-message</artifactId>
                         </ejbModule>
                         <ejbModule>
-                            <groupId>${project.groupId}</groupId>
+                            <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
                             <artifactId>audit-service</artifactId>
                         </ejbModule>
                         <jarModule>
-                            <groupId>${project.groupId}</groupId>
+                            <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
                             <artifactId>audit-model</artifactId>
                         </jarModule>
                         <webModule>
-                            <groupId>${project.groupId}</groupId>
+                            <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
                             <artifactId>audit-rest</artifactId>
                             <contextRoot>${context.root}${parent.artifactId}</contextRoot>
                         </webModule>
+                        <jarModule>
+                            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                            <artifactId>usm4uvms</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                            <bundleDir>/</bundleDir>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>eu.europa.ec.mare.usm</groupId>
+                            <artifactId>jwt-handler-impl</artifactId>
+                            <bundleFileName>jw-handler-impl.jar</bundleFileName>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                            <bundleDir>/</bundleDir>
+                        </jarModule>
                     </modules>
                     <skinnyWars>true</skinnyWars>
-                    <defaultLibBundleDir>APP-INF/lib</defaultLibBundleDir>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
-    	<dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>audit-dbaccess-domain</artifactId>
             <version>${project.version}</version>
@@ -83,34 +96,27 @@
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
-
         <!-- Skinny WAR depencencies -->
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
             <version>${usm4uvms.version}</version>
             <exclusions>
-				<exclusion>
-					<groupId>org.jboss.resteasy</groupId>
-					<artifactId>resteasy-jaxrs</artifactId>
-				</exclusion>
-				<exclusion>
-				    <groupId>net.sf.ehcache</groupId>
-  					<artifactId>ehcache</artifactId>				
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-		    <groupId>net.sf.ehcache.internal</groupId>
-		    <artifactId>ehcache-core</artifactId>
-            <version>2.10.4</version>
-            <exclusions>
-            	<exclusion>
-            		 <groupId>org.slf4j</groupId>
-    				 <artifactId>slf4j-api</artifactId>
-            	</exclusion>
-            </exclusions>           
-        </dependency>		
+                <exclusion>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-jaxrs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.ehcache</groupId>
+                    <artifactId>ehcache</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.mare.usm</groupId>
+            <artifactId>jwt-handler-impl</artifactId>
+            <version>${usm.jwt-handler.version}</version>
+        </dependency>
     </dependencies>
 
     <!-- USE following command to run this profile: mvn clean install -P wildfly-deploy wildfly:deploy -Dhostname=127.0.0.1 -Dport=9990 -Dusername=admin -Dpassword=asdf  -->
@@ -160,7 +166,8 @@
                                             <type>${project.packaging}</type>
                                         </artifactItem>
                                     </artifactItems>
-                                    <outputDirectory>C:\dev\WebLogic\domain1213\servers\AdminServer\upload</outputDirectory>
+                                    <outputDirectory>C:\dev\WebLogic\domain1213\servers\AdminServer\upload
+                                    </outputDirectory>
                                 </configuration>
                             </execution>
                         </executions>
