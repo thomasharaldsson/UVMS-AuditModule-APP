@@ -56,7 +56,6 @@
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-date</artifactId>
 			<version>${uvms.commons.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>fish.focus.uvms.maven</groupId>
