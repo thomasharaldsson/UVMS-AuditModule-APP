@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 
 public class SearchFieldMapper {
 
+    private SearchFieldMapper() {}
+
     private static final Logger LOG = LoggerFactory.getLogger(SearchFieldMapper.class);
 
     /**
