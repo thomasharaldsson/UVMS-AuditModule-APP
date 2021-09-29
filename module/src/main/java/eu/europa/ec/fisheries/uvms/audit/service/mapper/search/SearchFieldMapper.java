@@ -209,7 +209,7 @@ public class SearchFieldMapper {
             if (values.containsKey(search.getField())) {
                 values.get(search.getField()).add(search);
             } else {
-                values.put(search.getField(), new ArrayList<SearchValue>(Arrays.asList(search)));
+                values.put(search.getField(), new ArrayList<>(Arrays.asList(search)));
             }
 
         }
