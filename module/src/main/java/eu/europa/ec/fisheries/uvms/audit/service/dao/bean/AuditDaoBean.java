@@ -32,7 +32,7 @@ public class AuditDaoBean {
     protected EntityManager em;
 
     public Long getAuditListSearchCount(String countSql, List<SearchValue> searchKeyValues)  {
-        LOG.debug("SQL QUERY IN LIST COUNTNG: " + countSql);
+        LOG.debug("SQL QUERY IN LIST COUNTNG: {}", countSql);
         TypedQuery<Long> query = em.createQuery(countSql, Long.class);
 
         setQueryParameters(searchKeyValues, query);
@@ -41,7 +41,7 @@ public class AuditDaoBean {
     }
 
     public List<AuditLog> getAuditListPaginated(Integer page, Integer listSize, String sql, List<SearchValue> searchKeyValues) {
-        LOG.debug("SQL QUERY IN LIST PAGINATED: " + sql);
+        LOG.debug("SQL QUERY IN LIST PAGINATED: {}", sql);
         TypedQuery<AuditLog> query = em.createQuery(sql, AuditLog.class);
 
         setQueryParameters(searchKeyValues, query);
